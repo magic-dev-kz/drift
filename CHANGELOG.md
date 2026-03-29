@@ -1,5 +1,12 @@
 # Drift — Changelog
 
+## v11.0 (2026-03-29)
+- Onboarding overlay: animated CSS wave/water visual at bottom (matches brand)
+- Done button glow stronger on press (double-layer streak glow)
+- Service worker cache bumped to `drift-v11.0`
+
+---
+
 ## v10.0 (2026-03-29)
 - First-visit tooltip "Tap Done to start building momentum" shown once on first load
 - Momentum percentage font larger (48px to 54px) for readability

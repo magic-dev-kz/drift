@@ -533,6 +533,7 @@ body {
 .btn-done:active {
   transform: scale(0.96);
   transition-duration: 80ms;
+  box-shadow: 0 4px 12px var(--color-shadow), 0 0 24px var(--streak-glow), 0 0 48px var(--streak-glow);
 }
 
 .btn-done--completed {
@@ -994,6 +995,36 @@ body {
   transform: scale(0.95);
   animation: drift-onb-in 400ms ease forwards;
   padding: 24px;
+  overflow: hidden;
+}
+/* v11: animated wave visual */
+.drift-welcome-overlay::before,
+.drift-welcome-overlay::after {
+  content: '';
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  height: 80px;
+  border-radius: 45%;
+  opacity: 0.18;
+  pointer-events: none;
+  animation: drift-wave 6s ease-in-out infinite;
+}
+.drift-welcome-overlay::before {
+  bottom: -20px;
+  background: linear-gradient(90deg, var(--color-accent-lavender), var(--color-accent-sky));
+  animation-duration: 6s;
+}
+.drift-welcome-overlay::after {
+  bottom: -10px;
+  background: linear-gradient(90deg, var(--color-accent-sky), var(--color-accent-lavender));
+  animation-duration: 8s;
+  animation-direction: reverse;
+  opacity: 0.12;
+}
+@keyframes drift-wave {
+  0%, 100% { transform: translateX(-5%) rotate(-2deg); }
+  50% { transform: translateX(5%) rotate(2deg); }
 }
 @media (prefers-color-scheme: dark) {
   .drift-welcome-overlay {
@@ -2777,7 +2808,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '10.0',
+      version: '11.0',
       exported: new Date().toISOString(),
       habits: habits
     };
