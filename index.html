@@ -635,6 +635,111 @@ body {
   animation: dot-fill 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* ===== v13: STREAKS CALENDAR ===== */
+.streaks-calendar {
+  width: 100%;
+  margin-top: 16px;
+}
+.streaks-calendar__toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+.streaks-calendar__toggle:hover { opacity: 1; }
+.streaks-calendar__toggle-arrow {
+  font-size: 0.65rem;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+.streaks-calendar__toggle-arrow.open { transform: rotate(180deg); }
+.streaks-calendar__body {
+  display: none;
+  margin-top: 8px;
+}
+.streaks-calendar__body.open { display: block; }
+.streaks-calendar__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.streaks-calendar__nav-btn {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.streaks-calendar__nav-btn:hover { opacity: 1; }
+.streaks-calendar__month {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text);
+  opacity: 0.8;
+}
+.streaks-calendar__weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  margin-bottom: 4px;
+}
+.streaks-calendar__weekday {
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--color-text);
+  opacity: 0.4;
+  text-transform: uppercase;
+}
+.streaks-calendar__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.streaks-calendar__day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--color-text);
+  opacity: 0.35;
+  transition: all 0.2s ease;
+}
+.streaks-calendar__day--done {
+  background: var(--color-dot-done);
+  opacity: 1;
+  color: #1a1a1a;
+  font-weight: 700;
+  box-shadow: 0 0 6px rgba(168, 216, 200, 0.3);
+}
+.streaks-calendar__day--today {
+  border: 1.5px solid var(--color-accent-lavender);
+  opacity: 0.8;
+}
+.streaks-calendar__day--today.streaks-calendar__day--done {
+  opacity: 1;
+  box-shadow: 0 0 8px var(--streak-glow);
+}
+.streaks-calendar__day--empty {
+  opacity: 0;
+}
+
 /* ===== WEEKLY INSIGHTS ===== */
 
 .weekly-insights {
@@ -1888,6 +1993,22 @@ body {
 
   <div id="heatmap" class="heatmap" role="img" aria-label="0 of 30 days marked"></div>
 
+  <!-- v13: Streaks Calendar -->
+  <div class="streaks-calendar" id="streaks-calendar">
+    <button id="cal-toggle" class="streaks-calendar__toggle" aria-expanded="false" aria-controls="cal-body">
+      Monthly Calendar <span id="cal-arrow" class="streaks-calendar__toggle-arrow">&#x25BC;</span>
+    </button>
+    <div id="cal-body" class="streaks-calendar__body" role="region" aria-label="Monthly calendar">
+      <div class="streaks-calendar__nav">
+        <button class="streaks-calendar__nav-btn" id="cal-prev" aria-label="Previous month">&#9664;</button>
+        <span class="streaks-calendar__month" id="cal-month-label"></span>
+        <button class="streaks-calendar__nav-btn" id="cal-next" aria-label="Next month">&#9654;</button>
+      </div>
+      <div class="streaks-calendar__weekdays" id="cal-weekdays"></div>
+      <div class="streaks-calendar__grid" id="cal-grid"></div>
+    </div>
+  </div>
+
   <!-- Weekly Insights -->
   <div class="weekly-insights">
     <button id="weekly-toggle" class="weekly-toggle" aria-expanded="false" aria-controls="weekly-body">
@@ -2500,6 +2621,9 @@ body {
 
     // v12: Storage size indicator
     updateStorageIndicator();
+
+    // v13: Streaks calendar
+    renderCalendar(h);
   }
 
   function renderHeatmap(h, animateToday) {
@@ -2597,6 +2721,90 @@ body {
     elWeeklyArrow.classList.toggle('weekly-toggle-arrow--open', weeklyOpen);
     elWeeklyToggle.setAttribute('aria-expanded', weeklyOpen ? 'true' : 'false');
   });
+
+  // ===== v13: STREAKS CALENDAR =====
+  var calToggle = document.getElementById('cal-toggle');
+  var calArrow = document.getElementById('cal-arrow');
+  var calBody = document.getElementById('cal-body');
+  var calPrev = document.getElementById('cal-prev');
+  var calNext = document.getElementById('cal-next');
+  var calMonthLabel = document.getElementById('cal-month-label');
+  var calWeekdays = document.getElementById('cal-weekdays');
+  var calGrid = document.getElementById('cal-grid');
+  var calOpen = false;
+  var calDate = new Date(); // tracks which month is displayed
+
+  // Populate weekday headers once
+  (function() {
+    var days = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    calWeekdays.innerHTML = '';
+    for (var i = 0; i < days.length; i++) {
+      var span = document.createElement('span');
+      span.className = 'streaks-calendar__weekday';
+      span.textContent = days[i];
+      calWeekdays.appendChild(span);
+    }
+  })();
+
+  calToggle.addEventListener('click', function() {
+    calOpen = !calOpen;
+    calBody.classList.toggle('open', calOpen);
+    calArrow.classList.toggle('open', calOpen);
+    calToggle.setAttribute('aria-expanded', calOpen ? 'true' : 'false');
+    if (calOpen) {
+      calDate = new Date();
+      var h = active();
+      if (h) renderCalendar(h);
+    }
+  });
+
+  calPrev.addEventListener('click', function() {
+    calDate.setMonth(calDate.getMonth() - 1);
+    var h = active();
+    if (h) renderCalendar(h);
+  });
+
+  calNext.addEventListener('click', function() {
+    calDate.setMonth(calDate.getMonth() + 1);
+    var h = active();
+    if (h) renderCalendar(h);
+  });
+
+  function renderCalendar(h) {
+    if (!calBody.classList.contains('open')) return;
+    var year = calDate.getFullYear();
+    var month = calDate.getMonth();
+    var monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    calMonthLabel.textContent = monthNames[month] + ' ' + year;
+
+    var firstDay = new Date(year, month, 1).getDay(); // 0=Sun
+    var startOffset = (firstDay === 0) ? 6 : firstDay - 1; // shift so Monday=0
+    var daysInMonth = new Date(year, month + 1, 0).getDate();
+    var today = todayStr();
+
+    calGrid.innerHTML = '';
+
+    // Empty cells before first day
+    for (var e = 0; e < startOffset; e++) {
+      var empty = document.createElement('span');
+      empty.className = 'streaks-calendar__day streaks-calendar__day--empty';
+      calGrid.appendChild(empty);
+    }
+
+    for (var d = 1; d <= daysInMonth; d++) {
+      var dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+      var cell = document.createElement('span');
+      cell.className = 'streaks-calendar__day';
+      cell.textContent = d;
+      if (h.days.indexOf(dateStr) !== -1) {
+        cell.classList.add('streaks-calendar__day--done');
+      }
+      if (dateStr === today) {
+        cell.classList.add('streaks-calendar__day--today');
+      }
+      calGrid.appendChild(cell);
+    }
+  }
 
   // ===== PARTICLES =====
   function spawnParticles(color) {
@@ -2842,7 +3050,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '11.0',
+      version: '13.0',
       exported: new Date().toISOString(),
       habits: habits
     };

@@ -1,5 +1,23 @@
 # Drift — Changelog
 
+## v13.0 (2026-03-29)
+
+Feature update by Mario.
+
+### Monthly Calendar
+- Collapsible "Monthly Calendar" section with toggle button and animated arrow
+- Compact month view showing a grid of days with green dots on days the habit was completed
+- Today highlighted with distinct styling; completed today gets combined highlight
+- Navigation arrows to browse previous and future months
+- Monday-first weekday headers (Mo Tu We Th Fr Sa Su)
+- Calendar auto-opens to current month; updates live when toggling habits
+- Renders per-habit: switching habits updates the calendar with that habit's data
+
+### Technical
+- Service worker cache bumped to `drift-v13.0`
+
+---
+
 ## v12.0 (2026-03-29)
 
 ### Added
