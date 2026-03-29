@@ -1,5 +1,13 @@
 # Drift — Changelog
 
+## v10.0 (2026-03-29)
+- First-visit tooltip "Tap Done to start building momentum" shown once on first load
+- Momentum percentage font larger (48px to 54px) for readability
+- Service worker cache bumped to `drift-v10.0`
+- Export version bumped to `10.0`
+
+---
+
 ## v9.0 (2026-03-29)
 
 ### Share on X
