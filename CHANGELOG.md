@@ -1,5 +1,9 @@
 # Drift — Changelog
 
+## v16.0 (2026-03-29) — Habit Emoji Picker
+
+- **Emoji Picker**: Choose from 5 emojis when creating a new habit, displayed in tab and name
+- SW cache bumped to `drift-v16.0`
 ## v15.0 (2026-03-29) — Rest Day Indicator
 
 Feature update by Mario.

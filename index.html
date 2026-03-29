@@ -2480,7 +2480,7 @@ body {
     for (var i = 0; i < habits.length; i++) {
       var tab = document.createElement('button');
       tab.className = 'habit-tab' + (i === activeIdx ? ' habit-tab--active' : '');
-      tab.textContent = habits[i].name || 'Habit ' + (i + 1);
+      tab.textContent = (habits[i].emoji ? habits[i].emoji + ' ' : '') + (habits[i].name || 'Habit ' + (i + 1));
       // v14: Show habit color as left border on tab pill
       var HABIT_COLORS_MAP = {red:'#E74C3C',blue:'#3498DB',green:'#27AE60',purple:'#9B59B6',orange:'#E67E22',teal:'#1ABC9C'};
       if (habits[i].color && HABIT_COLORS_MAP[habits[i].color]) {
@@ -2561,6 +2561,35 @@ body {
     });
     elModalText.appendChild(catRow);
 
+    // v16: Emoji picker
+    var HABIT_EMOJIS = ['\uD83D\uDCAA','\uD83D\uDCDA','\uD83C\uDFA8','\u2764\uFE0F','\uD83C\uDF1F'];
+    var _modalEmoji = null;
+    var emojiRow = document.createElement('div');
+    emojiRow.style.cssText = 'display:flex;gap:10px;justify-content:center;margin-top:10px;';
+    HABIT_EMOJIS.forEach(function(em) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.textContent = em;
+      btn.style.cssText = 'font-size:22px;width:40px;height:40px;border-radius:50%;border:2px solid transparent;background:rgba(255,255,255,0.06);cursor:pointer;transition:transform 200ms,border-color 200ms;padding:0;display:flex;align-items:center;justify-content:center;';
+      btn.addEventListener('click', function() {
+        if (_modalEmoji === em) {
+          _modalEmoji = null;
+          btn.style.borderColor = 'transparent';
+          btn.style.transform = 'scale(1)';
+        } else {
+          emojiRow.querySelectorAll('button').forEach(function(b) {
+            b.style.borderColor = 'transparent';
+            b.style.transform = 'scale(1)';
+          });
+          _modalEmoji = em;
+          btn.style.borderColor = 'var(--color-accent-lavender)';
+          btn.style.transform = 'scale(1.2)';
+        }
+      });
+      emojiRow.appendChild(btn);
+    });
+    elModalText.appendChild(emojiRow);
+
     // v14: Color picker
     var HABIT_COLORS = {red:'#E74C3C',blue:'#3498DB',green:'#27AE60',purple:'#9B59B6',orange:'#E67E22',teal:'#1ABC9C'};
     var _modalColor = null;
@@ -2595,6 +2624,7 @@ body {
       var name = inp ? inp.value.trim() : '';
       if (!name) return false; // don't close
       var newH = { id: generateId(), name: name, days: [], category: _modalCat || null };
+      if (_modalEmoji) newH.emoji = _modalEmoji;
       if (_modalColor) newH.color = _modalColor;
       habits.push(newH);
       activeIdx = habits.length - 1;
