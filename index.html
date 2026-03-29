@@ -175,23 +175,87 @@ body {
   max-width: var(--card-max-width);
   width: calc(100% - 32px);
   margin: 0 auto;
-  box-shadow: 0 4px 24px var(--color-shadow);
+  box-shadow:
+    0 4px 24px var(--color-shadow),
+    0 1px 3px rgba(61, 58, 55, 0.04);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 24px;
 }
 
+/* ===== HABIT TABS ===== */
+
+.habit-tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  width: 100%;
+  justify-content: center;
+  padding: 0 4px 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.habit-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.habit-tab {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  border-radius: 12px 12px 0 0;
+  transition: color 200ms ease, border-color 200ms ease, background 200ms ease;
+  flex-shrink: 0;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.habit-tab:hover {
+  color: var(--color-text-primary);
+  background: var(--color-dot-missed);
+}
+
+.habit-tab--active {
+  color: var(--color-text-primary);
+  border-bottom-color: var(--color-accent-lavender);
+}
+
+.habit-tab--add {
+  font-size: 16px;
+  font-weight: 400;
+  padding: 6px 10px;
+  color: var(--color-text-secondary);
+}
+
+.habit-tab--add:hover {
+  color: var(--color-accent-lavender);
+}
+
+.habit-tab:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
 /* ===== HABIT NAME ===== */
 
 .habit-name {
   font-family: var(--font-family);
-  font-size: 24px;
-  font-weight: 500;
+  font-size: 20px;
+  font-weight: 600;
   color: var(--color-text-primary);
   text-align: center;
   line-height: 1.3;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   border: none;
   background: none;
   width: 100%;
@@ -259,12 +323,13 @@ body {
 /* ===== PHRASE ===== */
 
 .phrase {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
   color: var(--color-text-phrase);
   text-align: center;
   line-height: 1.5;
-  min-height: 24px;
+  letter-spacing: 0.01em;
+  min-height: 21px;
   transition: opacity 300ms ease;
   margin-top: -8px;
 }
@@ -383,6 +448,179 @@ body {
 
 .heatmap-dot--animate {
   animation: dot-fill 400ms ease-out;
+}
+
+/* ===== WEEKLY INSIGHTS ===== */
+
+.weekly-insights {
+  width: 100%;
+}
+
+.weekly-toggle {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  transition: color 200ms ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.weekly-toggle:hover {
+  color: var(--color-text-primary);
+}
+
+.weekly-toggle:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.weekly-toggle-arrow {
+  display: inline-block;
+  transition: transform 200ms ease;
+  font-size: 10px;
+}
+
+.weekly-toggle-arrow--open {
+  transform: rotate(180deg);
+}
+
+.weekly-body {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 300ms ease, opacity 200ms ease, margin 200ms ease;
+  margin-top: 0;
+}
+
+.weekly-body--open {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 12px;
+}
+
+.weekly-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.weekly-stat {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.weekly-trend {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+.weekly-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 40px;
+  width: 100%;
+}
+
+.weekly-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  height: 100%;
+}
+
+.weekly-bar {
+  width: 100%;
+  max-width: 28px;
+  border-radius: 4px 4px 0 0;
+  background: var(--color-dot-missed);
+  transition: height 400ms ease, background 400ms ease;
+  margin-top: auto;
+  min-height: 3px;
+}
+
+.weekly-bar--done {
+  background: var(--color-dot-done);
+}
+
+.weekly-bar--today {
+  border: 1.5px solid var(--color-dot-today);
+  background: transparent;
+}
+
+.weekly-bar--today.weekly-bar--done {
+  background: var(--color-dot-done);
+  border-color: var(--color-dot-today);
+}
+
+.weekly-day-label {
+  font-size: 9px;
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+/* ===== EXPORT ===== */
+
+.export-btn {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  transition: color 200ms ease;
+  letter-spacing: 0.02em;
+}
+
+.export-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.export-btn:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.export-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px var(--color-shadow);
+  opacity: 0;
+  transition: opacity 200ms ease, transform 200ms ease;
+  pointer-events: none;
+  z-index: 200;
+}
+
+.export-toast--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* ===== MODAL ===== */
@@ -641,7 +879,7 @@ body {
   <div class="drift-welcome-card">
     <div class="drift-welcome-icon" aria-hidden="true">&#x1F30A;</div>
     <h1 class="drift-welcome-title">Drift</h1>
-    <p class="drift-welcome-subtitle">One habit. One button. No guilt when you miss a day.</p>
+    <p class="drift-welcome-subtitle">Track up to 5 habits. No guilt when you miss a day.</p>
     <ul class="drift-welcome-features">
       <li><span class="icon" aria-hidden="true">&#x2728;</span> Momentum, not streaks</li>
       <li><span class="icon" aria-hidden="true">&#x1F4CA;</span> Visual progress heatmap</li>
@@ -653,14 +891,17 @@ body {
 
 <!-- ONBOARDING -->
 <div id="onboarding" class="onboarding hidden">
-  <div class="onboarding-title">Какую привычку ты хочешь развить?</div>
-  <input type="text" id="onboarding-input" class="onboarding-input" placeholder="Например: медитация" maxlength="60" autocomplete="off">
-  <button id="onboarding-btn" class="onboarding-btn" disabled>Начать</button>
+  <div class="onboarding-title">What habit do you want to build?</div>
+  <input type="text" id="onboarding-input" class="onboarding-input" placeholder="e.g. meditate" maxlength="60" autocomplete="off">
+  <button id="onboarding-btn" class="onboarding-btn" disabled>Start</button>
 </div>
 
 <!-- MAIN CARD -->
 <div id="app" class="card hidden">
-  <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="Моя привычка">
+  <!-- Habit Tabs -->
+  <div id="habit-tabs" class="habit-tabs" role="tablist" aria-label="Habits"></div>
+
+  <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="My habit">
 
   <div class="momentum-meter" aria-label="Momentum: 0%">
     <svg class="momentum-svg" viewBox="0 0 200 200">
@@ -672,21 +913,41 @@ body {
     <div id="momentum-text" class="momentum-text">0%</div>
   </div>
 
-  <div id="phrase" class="phrase">Первый шаг — самый важный</div>
+  <div id="phrase" class="phrase">The first step matters most</div>
 
-  <button id="btn-done" class="btn-done">Сделано</button>
+  <button id="btn-done" class="btn-done">Done</button>
 
-  <div id="heatmap" class="heatmap" role="img" aria-label="Отмечено 0 из 30 дней"></div>
+  <div id="heatmap" class="heatmap" role="img" aria-label="0 of 30 days marked"></div>
+
+  <!-- Weekly Insights -->
+  <div class="weekly-insights">
+    <button id="weekly-toggle" class="weekly-toggle" aria-expanded="false" aria-controls="weekly-body">
+      This Week <span id="weekly-arrow" class="weekly-toggle-arrow">&#x25BC;</span>
+    </button>
+    <div id="weekly-body" class="weekly-body" role="region" aria-label="Weekly insights">
+      <div class="weekly-stats">
+        <span id="weekly-stat" class="weekly-stat">0 of 7 days</span>
+        <span id="weekly-trend" class="weekly-trend"></span>
+      </div>
+      <div id="weekly-bars" class="weekly-bars"></div>
+    </div>
+  </div>
+
+  <!-- Export -->
+  <button id="export-btn" class="export-btn">Export data</button>
 </div>
+
+<!-- TOAST -->
+<div id="export-toast" class="export-toast" aria-live="polite"></div>
 
 <!-- MODAL -->
 <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
   <div class="modal">
-    <div id="modal-title" class="modal-title">Начать заново?</div>
-    <div class="modal-text">Привычка и вся история будут удалены. Это действие нельзя отменить.</div>
+    <div id="modal-title" class="modal-title">Start over?</div>
+    <div id="modal-text" class="modal-text">This habit and all its history will be deleted. This cannot be undone.</div>
     <div class="modal-actions">
-      <button id="modal-cancel" class="modal-btn modal-btn--cancel">Отмена</button>
-      <button id="modal-confirm" class="modal-btn modal-btn--confirm">Удалить</button>
+      <button id="modal-cancel" class="modal-btn modal-btn--cancel">Cancel</button>
+      <button id="modal-confirm" class="modal-btn modal-btn--confirm">Delete</button>
     </div>
   </div>
 </div>
@@ -698,17 +959,20 @@ body {
   // ===== CONSTANTS =====
   var CIRCUMFERENCE = 2 * Math.PI * 90; // 565.49
   var WINDOW_DAYS = 30;
-  var STORAGE_KEY = 'drift_data';
+  var STORAGE_KEY = 'drift_habits';
+  var LEGACY_KEY = 'drift_data';
   var LONG_PRESS_MS = 500;
+  var MAX_HABITS = 5;
+  var DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   // ===== PHRASES =====
   var PHRASES = [
-    { min: 0,   max: 0,   text: 'Первый шаг \u2014 самый важный' },
-    { min: 1,   max: 30,  text: 'Начало положено' },
-    { min: 31,  max: 60,  text: 'Набираешь обороты' },
-    { min: 61,  max: 80,  text: 'Хорошая инерция' },
-    { min: 81,  max: 99,  text: 'Ты в потоке' },
-    { min: 100, max: 100, text: 'Полный momentum' }
+    { min: 0,   max: 0,   text: 'The first step matters most' },
+    { min: 1,   max: 30,  text: 'You have started' },
+    { min: 31,  max: 60,  text: 'Picking up speed' },
+    { min: 61,  max: 80,  text: 'Good momentum' },
+    { min: 81,  max: 99,  text: 'You are in the flow' },
+    { min: 100, max: 100, text: 'Full momentum' }
   ];
 
   // ===== DOM =====
@@ -716,35 +980,72 @@ body {
   var elOnboardingInput = document.getElementById('onboarding-input');
   var elOnboardingBtn = document.getElementById('onboarding-btn');
   var elApp = document.getElementById('app');
+  var elHabitTabs = document.getElementById('habit-tabs');
   var elHabitName = document.getElementById('habit-name');
   var elMomentumProgress = document.getElementById('momentum-progress');
   var elMomentumText = document.getElementById('momentum-text');
   var elPhrase = document.getElementById('phrase');
   var elBtnDone = document.getElementById('btn-done');
   var elHeatmap = document.getElementById('heatmap');
+  var elWeeklyToggle = document.getElementById('weekly-toggle');
+  var elWeeklyArrow = document.getElementById('weekly-arrow');
+  var elWeeklyBody = document.getElementById('weekly-body');
+  var elWeeklyStat = document.getElementById('weekly-stat');
+  var elWeeklyTrend = document.getElementById('weekly-trend');
+  var elWeeklyBars = document.getElementById('weekly-bars');
+  var elExportBtn = document.getElementById('export-btn');
+  var elExportToast = document.getElementById('export-toast');
   var elModalOverlay = document.getElementById('modal-overlay');
+  var elModalTitle = document.getElementById('modal-title');
+  var elModalText = document.getElementById('modal-text');
   var elModalCancel = document.getElementById('modal-cancel');
   var elModalConfirm = document.getElementById('modal-confirm');
 
+  // ===== STATE =====
+  var habits = [];        // array of {id, name, days:[]}
+  var activeIdx = 0;      // index into habits[]
+  var weeklyOpen = false;
+  var modalAction = null;  // function to call on confirm
+
   // ===== STORAGE =====
-  function loadData() {
+  function loadHabits() {
     try {
       var raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) return JSON.parse(raw);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
     } catch (e) { /* ignore */ }
+
+    // Migrate from v1 legacy format
+    try {
+      var legacy = localStorage.getItem(LEGACY_KEY);
+      if (legacy) {
+        var old = JSON.parse(legacy);
+        if (old && old.habit) {
+          var migrated = [{
+            id: generateId(),
+            name: old.habit,
+            days: Array.isArray(old.days) ? old.days : []
+          }];
+          saveHabits(migrated);
+          try { localStorage.removeItem(LEGACY_KEY); } catch(e) {}
+          return migrated;
+        }
+      }
+    } catch (e) { /* ignore */ }
+
     return null;
   }
 
-  function saveData(data) {
+  function saveHabits(data) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) { /* ignore */ }
   }
 
-  function clearData() {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) { /* ignore */ }
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
   }
 
   // ===== DATE HELPERS =====
@@ -765,7 +1066,6 @@ body {
 
   // ===== MOMENTUM CALCULATION =====
   function calcMomentum(doneDays) {
-    var today = todayStr();
     var count = 0;
     for (var i = 0; i < WINDOW_DAYS; i++) {
       var day = daysAgoStr(i);
@@ -776,12 +1076,12 @@ body {
 
   // ===== COLOR BY MOMENTUM =====
   function getMomentumColor(pct) {
-    if (pct <= 0)  return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-lavender').trim();
-    if (pct <= 30) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-lavender').trim();
-    if (pct <= 60) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-mint').trim();
-    if (pct <= 80) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-peach').trim();
-    if (pct <= 99) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-apricot').trim();
-    return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-gold').trim();
+    var cs = getComputedStyle(document.documentElement);
+    if (pct <= 30) return cs.getPropertyValue('--color-accent-lavender').trim();
+    if (pct <= 60) return cs.getPropertyValue('--color-accent-mint').trim();
+    if (pct <= 80) return cs.getPropertyValue('--color-accent-peach').trim();
+    if (pct <= 99) return cs.getPropertyValue('--color-accent-apricot').trim();
+    return cs.getPropertyValue('--color-accent-gold').trim();
   }
 
   // ===== PHRASE =====
@@ -792,9 +1092,87 @@ body {
     return PHRASES[0].text;
   }
 
-  // ===== RENDER =====
-  function render(data, animate) {
-    var momentum = calcMomentum(data.days);
+  // ===== ACTIVE HABIT HELPER =====
+  function active() {
+    return habits[activeIdx] || null;
+  }
+
+  // ===== RENDER TABS =====
+  function renderTabs() {
+    elHabitTabs.innerHTML = '';
+    for (var i = 0; i < habits.length; i++) {
+      var tab = document.createElement('button');
+      tab.className = 'habit-tab' + (i === activeIdx ? ' habit-tab--active' : '');
+      tab.textContent = habits[i].name || 'Habit ' + (i + 1);
+      tab.setAttribute('role', 'tab');
+      tab.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
+      tab.dataset.idx = i;
+      tab.addEventListener('click', onTabClick);
+      elHabitTabs.appendChild(tab);
+    }
+    // Add "+" button if under max
+    if (habits.length < MAX_HABITS) {
+      var addBtn = document.createElement('button');
+      addBtn.className = 'habit-tab habit-tab--add';
+      addBtn.textContent = '+';
+      addBtn.title = 'Add habit';
+      addBtn.setAttribute('aria-label', 'Add new habit');
+      addBtn.addEventListener('click', onAddHabit);
+      elHabitTabs.appendChild(addBtn);
+    }
+    // Hide tabs row if only 1 habit and no room for add
+    elHabitTabs.style.display = (habits.length <= 1 && habits.length < MAX_HABITS) ? 'flex' : 'flex';
+  }
+
+  function onTabClick(e) {
+    var idx = parseInt(e.currentTarget.dataset.idx, 10);
+    if (idx === activeIdx) return;
+    activeIdx = idx;
+    renderTabs();
+    renderCurrent(false);
+  }
+
+  function onAddHabit() {
+    if (habits.length >= MAX_HABITS) return;
+    // Show onboarding-style input via modal
+    elModalTitle.textContent = 'New habit';
+    elModalText.innerHTML = '<input type="text" id="modal-habit-input" style="' +
+      'font-family:var(--font-family);font-size:16px;color:var(--color-text-primary);' +
+      'background:var(--color-bg);border:2px solid var(--color-dot-missed);border-radius:10px;' +
+      'padding:10px 14px;width:100%;text-align:center;margin-top:4px;" ' +
+      'placeholder="e.g. read" maxlength="60" autocomplete="off">';
+    elModalCancel.textContent = 'Cancel';
+    elModalConfirm.textContent = 'Add';
+    modalAction = function() {
+      var inp = document.getElementById('modal-habit-input');
+      var name = inp ? inp.value.trim() : '';
+      if (!name) return false; // don't close
+      habits.push({ id: generateId(), name: name, days: [] });
+      activeIdx = habits.length - 1;
+      saveHabits(habits);
+      renderTabs();
+      renderCurrent(false);
+      return true;
+    };
+    elModalOverlay.classList.remove('hidden');
+    setTimeout(function() {
+      var inp = document.getElementById('modal-habit-input');
+      if (inp) {
+        inp.focus();
+        inp.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') { elModalConfirm.click(); }
+        });
+      }
+    }, 50);
+  }
+
+  // ===== RENDER CURRENT HABIT =====
+  function renderCurrent(animate) {
+    var h = active();
+    if (!h) return;
+    elHabitName.value = h.name;
+
+    var momentum = calcMomentum(h.days);
     var color = getMomentumColor(momentum);
     var offset = CIRCUMFERENCE - (CIRCUMFERENCE * momentum / 100);
 
@@ -802,15 +1180,14 @@ body {
     elMomentumProgress.setAttribute('stroke', color);
     elMomentumText.textContent = momentum + '%';
 
-    // ARIA: update momentum meter label
+    // ARIA
     elMomentumProgress.closest('.momentum-meter').setAttribute('aria-label', 'Momentum: ' + momentum + '%');
 
-    // ARIA: update heatmap label
     var doneCount = 0;
     for (var j = 0; j < WINDOW_DAYS; j++) {
-      if (data.days.indexOf(daysAgoStr(j)) !== -1) doneCount++;
+      if (h.days.indexOf(daysAgoStr(j)) !== -1) doneCount++;
     }
-    elHeatmap.setAttribute('aria-label', '\u041E\u0442\u043C\u0435\u0447\u0435\u043D\u043E ' + doneCount + ' \u0438\u0437 30 \u0434\u043D\u0435\u0439');
+    elHeatmap.setAttribute('aria-label', doneCount + ' of 30 days marked');
 
     // Phrase
     var phrase = getPhrase(momentum);
@@ -824,8 +1201,8 @@ body {
 
     // Button state
     var today = todayStr();
-    var isDoneToday = data.days.indexOf(today) !== -1;
-    elBtnDone.textContent = isDoneToday ? 'Готово!' : 'Сделано';
+    var isDoneToday = h.days.indexOf(today) !== -1;
+    elBtnDone.textContent = isDoneToday ? 'Done!' : 'Done';
     if (isDoneToday) {
       elBtnDone.classList.add('btn-done--completed');
     } else {
@@ -833,25 +1210,27 @@ body {
     }
 
     // Heatmap
-    renderHeatmap(data, animate);
+    renderHeatmap(h, animate);
+
+    // Weekly insights
+    renderWeekly(h);
   }
 
-  function renderHeatmap(data, animateToday) {
+  function renderHeatmap(h, animateToday) {
     elHeatmap.innerHTML = '';
     var today = todayStr();
     for (var i = WINDOW_DAYS - 1; i >= 0; i--) {
       var day = daysAgoStr(i);
       var dot = document.createElement('div');
       dot.className = 'heatmap-dot';
-      var isDone = data.days.indexOf(day) !== -1;
+      var isDone = h.days.indexOf(day) !== -1;
 
-      // Add date tooltip
-      var d = new Date(day);
-      dot.title = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + (isDone ? ' ✓' : '');
+      var d = new Date(day + 'T00:00:00');
+      dot.title = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + (isDone ? ' \u2713' : '');
 
       if (day === today) {
         dot.classList.add('heatmap-dot--today');
-        dot.title = 'Today' + (isDone ? ' ✓' : '');
+        dot.title = 'Today' + (isDone ? ' \u2713' : '');
         if (isDone) {
           dot.classList.add('heatmap-dot--done');
           if (animateToday) dot.classList.add('heatmap-dot--animate');
@@ -862,6 +1241,74 @@ body {
       elHeatmap.appendChild(dot);
     }
   }
+
+  // ===== WEEKLY INSIGHTS =====
+  function renderWeekly(h) {
+    var today = todayStr();
+    var todayDate = new Date();
+    var dayOfWeek = todayDate.getDay(); // 0=Sun
+
+    // This week: count done days (Sun-Sat or last 7 days ending today)
+    var weekDone = 0;
+    var weekDays = [];
+    for (var i = 6; i >= 0; i--) {
+      var day = daysAgoStr(i);
+      var done = h.days.indexOf(day) !== -1;
+      if (done) weekDone++;
+      var dt = new Date(day + 'T00:00:00');
+      weekDays.push({ date: day, done: done, label: DAY_LABELS[dt.getDay()], isToday: day === today });
+    }
+
+    elWeeklyStat.textContent = weekDone + ' of 7 days';
+
+    // Trend: compare this week momentum vs previous week
+    var prevWeekDone = 0;
+    for (var k = 13; k >= 7; k--) {
+      if (h.days.indexOf(daysAgoStr(k)) !== -1) prevWeekDone++;
+    }
+
+    var trendText = '';
+    if (prevWeekDone === 0 && weekDone === 0) {
+      trendText = '';
+    } else if (prevWeekDone === 0) {
+      trendText = '\u2191 new';
+    } else {
+      var diff = Math.round(((weekDone - prevWeekDone) / prevWeekDone) * 100);
+      if (diff > 0) trendText = '\u2191 +' + diff + '%';
+      else if (diff < 0) trendText = '\u2193 ' + diff + '%';
+      else trendText = '\u2192 stable';
+    }
+    elWeeklyTrend.textContent = trendText;
+
+    // Bars
+    elWeeklyBars.innerHTML = '';
+    for (var b = 0; b < weekDays.length; b++) {
+      var wrap = document.createElement('div');
+      wrap.className = 'weekly-bar-wrap';
+
+      var bar = document.createElement('div');
+      bar.className = 'weekly-bar';
+      if (weekDays[b].done) bar.classList.add('weekly-bar--done');
+      if (weekDays[b].isToday) bar.classList.add('weekly-bar--today');
+      bar.style.height = weekDays[b].done ? '100%' : '20%';
+
+      var label = document.createElement('span');
+      label.className = 'weekly-day-label';
+      label.textContent = weekDays[b].label;
+
+      wrap.appendChild(bar);
+      wrap.appendChild(label);
+      elWeeklyBars.appendChild(wrap);
+    }
+  }
+
+  // Toggle weekly
+  elWeeklyToggle.addEventListener('click', function() {
+    weeklyOpen = !weeklyOpen;
+    elWeeklyBody.classList.toggle('weekly-body--open', weeklyOpen);
+    elWeeklyArrow.classList.toggle('weekly-toggle-arrow--open', weeklyOpen);
+    elWeeklyToggle.setAttribute('aria-expanded', weeklyOpen ? 'true' : 'false');
+  });
 
   // ===== PARTICLES =====
   function spawnParticles(color) {
@@ -883,42 +1330,43 @@ body {
 
   // ===== TOGGLE TODAY =====
   function toggleToday() {
-    var data = loadData();
-    if (!data) return;
+    var h = active();
+    if (!h) return;
     var today = todayStr();
-    var idx = data.days.indexOf(today);
+    var idx = h.days.indexOf(today);
     var marking = idx === -1;
 
     if (marking) {
-      data.days.push(today);
+      h.days.push(today);
     } else {
-      data.days.splice(idx, 1);
+      h.days.splice(idx, 1);
     }
-    saveData(data);
+    saveHabits(habits);
 
     if (marking) {
-      var momentum = calcMomentum(data.days);
+      var momentum = calcMomentum(h.days);
       var color = getMomentumColor(momentum);
       spawnParticles(color);
-      // Haptic
       if (navigator.vibrate) {
         try { navigator.vibrate(10); } catch(e) {}
       }
     }
 
-    render(data, marking);
+    renderCurrent(marking);
+    renderTabs(); // update tab text if needed
   }
 
   // ===== HABIT NAME CHANGE =====
   function onHabitNameChange() {
-    var data = loadData();
-    if (!data) return;
+    var h = active();
+    if (!h) return;
     var name = elHabitName.value.trim();
-    if (name && name !== data.habit) {
-      data.habit = name;
-      saveData(data);
+    if (name && name !== h.name) {
+      h.name = name;
+      saveHabits(habits);
+      renderTabs();
     } else if (!name) {
-      elHabitName.value = data.habit;
+      elHabitName.value = h.name;
     }
   }
 
@@ -927,7 +1375,7 @@ body {
 
   function onPointerDown(e) {
     longPressTimer = setTimeout(function() {
-      showModal();
+      showDeleteModal();
     }, LONG_PRESS_MS);
   }
 
@@ -941,37 +1389,68 @@ body {
   // ===== MODAL =====
   var modalTriggerEl = null;
 
-  function showModal() {
+  function showDeleteModal() {
+    var h = active();
+    if (!h) return;
     modalTriggerEl = document.activeElement;
+    elModalTitle.textContent = 'Delete "' + escapeHtml(h.name) + '"?';
+    elModalText.textContent = 'This habit and all its history will be deleted. This cannot be undone.';
+    elModalCancel.textContent = 'Cancel';
+    elModalConfirm.textContent = 'Delete';
+    modalAction = function() {
+      habits.splice(activeIdx, 1);
+      if (habits.length === 0) {
+        saveHabits(habits);
+        elApp.classList.add('hidden');
+        elOnboarding.classList.remove('hidden');
+        elOnboardingInput.value = '';
+        elOnboardingBtn.disabled = true;
+        elOnboardingInput.focus();
+        return true;
+      }
+      if (activeIdx >= habits.length) activeIdx = habits.length - 1;
+      saveHabits(habits);
+      renderTabs();
+      renderCurrent(false);
+      return true;
+    };
     elModalOverlay.classList.remove('hidden');
     elModalCancel.focus();
   }
 
   function hideModal() {
     elModalOverlay.classList.add('hidden');
+    modalAction = null;
     if (modalTriggerEl) {
       modalTriggerEl.focus();
       modalTriggerEl = null;
     }
   }
 
+  function escapeHtml(s) {
+    var div = document.createElement('div');
+    div.textContent = s;
+    return div.innerHTML;
+  }
+
   // Focus trap inside modal
   function trapFocus(e) {
     if (elModalOverlay.classList.contains('hidden')) return;
-    var focusable = [elModalCancel, elModalConfirm];
+    var focusable = elModalOverlay.querySelectorAll('button, input, [tabindex]:not([tabindex="-1"])');
+    var arr = Array.prototype.slice.call(focusable);
+    if (arr.length === 0) return;
     if (e.key === 'Tab') {
-      var idx = focusable.indexOf(document.activeElement);
+      var idx = arr.indexOf(document.activeElement);
       if (e.shiftKey) {
         e.preventDefault();
-        focusable[idx <= 0 ? focusable.length - 1 : idx - 1].focus();
+        arr[idx <= 0 ? arr.length - 1 : idx - 1].focus();
       } else {
         e.preventDefault();
-        focusable[idx >= focusable.length - 1 ? 0 : idx + 1].focus();
+        arr[idx >= arr.length - 1 ? 0 : idx + 1].focus();
       }
     }
   }
 
-  // Close on Escape
   function onKeyDown(e) {
     if (e.key === 'Escape' && !elModalOverlay.classList.contains('hidden')) {
       hideModal();
@@ -981,15 +1460,83 @@ body {
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keydown', trapFocus);
 
-  function confirmReset() {
-    clearData();
-    hideModal();
-    elApp.classList.add('hidden');
-    elOnboarding.classList.remove('hidden');
-    elOnboardingInput.value = '';
-    elOnboardingBtn.disabled = true;
-    elOnboardingInput.focus();
+  elModalCancel.addEventListener('click', hideModal);
+  elModalConfirm.addEventListener('click', function() {
+    if (modalAction) {
+      var result = modalAction();
+      if (result !== false) hideModal();
+    } else {
+      hideModal();
+    }
+  });
+  elModalOverlay.addEventListener('click', function(e) {
+    if (e.target === elModalOverlay) hideModal();
+  });
+
+  // ===== EXPORT =====
+  function exportData() {
+    if (!habits || habits.length === 0) return;
+
+    var lines = [];
+    lines.push('Drift - Habit Data Export');
+    lines.push('Exported: ' + new Date().toISOString().split('T')[0]);
+    lines.push('');
+
+    for (var i = 0; i < habits.length; i++) {
+      var h = habits[i];
+      var momentum = calcMomentum(h.days);
+      lines.push('--- ' + h.name + ' ---');
+      lines.push('Momentum: ' + momentum + '%');
+      lines.push('Total entries: ' + h.days.length);
+      if (h.days.length > 0) {
+        var sorted = h.days.slice().sort();
+        lines.push('Dates: ' + sorted.join(', '));
+      }
+      lines.push('');
+    }
+
+    var text = lines.join('\n');
+
+    // Try clipboard first
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function() {
+        showToast('Copied to clipboard');
+      }).catch(function() {
+        downloadExport(text);
+      });
+    } else {
+      downloadExport(text);
+    }
   }
+
+  function downloadExport(text) {
+    try {
+      var blob = new Blob([text], { type: 'text/plain' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'drift-export-' + todayStr() + '.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloaded');
+    } catch (e) {
+      showToast('Export failed');
+    }
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    elExportToast.textContent = msg;
+    elExportToast.classList.add('export-toast--visible');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() {
+      elExportToast.classList.remove('export-toast--visible');
+    }, 2000);
+  }
+
+  elExportBtn.addEventListener('click', exportData);
 
   // ===== ONBOARDING =====
   function startOnboarding() {
@@ -1001,19 +1548,18 @@ body {
   function finishOnboarding() {
     var name = elOnboardingInput.value.trim();
     if (!name) return;
-    var data = {
-      habit: name,
-      days: []
-    };
-    saveData(data);
-    showApp(data);
+    var newHabit = { id: generateId(), name: name, days: [] };
+    habits = [newHabit];
+    activeIdx = 0;
+    saveHabits(habits);
+    showApp();
   }
 
-  function showApp(data) {
+  function showApp() {
     elOnboarding.classList.add('hidden');
     elApp.classList.remove('hidden');
-    elHabitName.value = data.habit;
-    render(data, false);
+    renderTabs();
+    renderCurrent(false);
   }
 
   // ===== EVENT LISTENERS =====
@@ -1045,16 +1591,11 @@ body {
     }
   });
 
-  elModalCancel.addEventListener('click', hideModal);
-  elModalConfirm.addEventListener('click', confirmReset);
-  elModalOverlay.addEventListener('click', function(e) {
-    if (e.target === elModalOverlay) hideModal();
-  });
-
   // ===== INIT =====
-  var data = loadData();
-  if (data && data.habit) {
-    showApp(data);
+  habits = loadHabits() || [];
+  if (habits.length > 0) {
+    activeIdx = 0;
+    showApp();
   } else {
     startOnboarding();
   }
@@ -1062,7 +1603,7 @@ body {
   // ===== WELCOME OVERLAY =====
   (function initWelcome() {
     var KEY = 'drift_onboarding_done';
-    if (localStorage.getItem(KEY)) return;
+    try { if (localStorage.getItem(KEY)) return; } catch(e) { return; }
     var overlay = document.getElementById('drift-welcome');
     overlay.style.display = '';
     document.getElementById('drift-welcome-start').addEventListener('click', function() {
