@@ -1,4 +1,4 @@
-const CACHE = 'drift-v2';
+const CACHE = 'drift-v2.1';
 const ASSETS = ['./', './index.html'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

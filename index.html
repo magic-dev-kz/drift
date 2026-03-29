@@ -849,6 +849,19 @@ body {
 .drift-welcome-cta:active {
   transform: scale(0.97);
 }
+.drift-welcome-cta:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+/* ===== TABS WRAP ===== */
+.habit-tabs-wrap {
+  display: flex;
+  gap: 4px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
 
 /* ===== REDUCED MOTION ===== */
 
@@ -875,7 +888,7 @@ body {
 <body>
 
 <!-- WELCOME OVERLAY -->
-<div id="drift-welcome" class="drift-welcome-overlay" style="display:none;">
+<div id="drift-welcome" class="drift-welcome-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Welcome to Drift">
   <div class="drift-welcome-card">
     <div class="drift-welcome-icon" aria-hidden="true">&#x1F30A;</div>
     <h1 class="drift-welcome-title">Drift</h1>
@@ -899,8 +912,12 @@ body {
 <!-- MAIN CARD -->
 <div id="app" class="card hidden">
   <!-- Habit Tabs -->
-  <div id="habit-tabs" class="habit-tabs" role="tablist" aria-label="Habits"></div>
+  <div class="habit-tabs-wrap">
+    <div id="habit-tabs" class="habit-tabs" role="tablist" aria-label="Habits"></div>
+    <button id="habit-add-btn" class="habit-tab habit-tab--add" style="display:none;" aria-label="Add new habit">+</button>
+  </div>
 
+  <div id="drift-panel" role="tabpanel" aria-label="Habit details">
   <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="My habit">
 
   <div class="momentum-meter" aria-label="Momentum: 0%">
@@ -933,8 +950,12 @@ body {
     </div>
   </div>
 
-  <!-- Export -->
-  <button id="export-btn" class="export-btn">Export data</button>
+  <!-- Export & Delete -->
+  <div class="export-row" style="display:flex;gap:8px;align-items:center;">
+    <button id="export-btn" class="export-btn">Export data</button>
+    <button id="delete-habit-btn" class="export-btn" style="color:var(--color-accent-peach);">Delete habit</button>
+  </div>
+  </div><!-- /tabpanel -->
 </div>
 
 <!-- TOAST -->
@@ -1098,6 +1119,9 @@ body {
   }
 
   // ===== RENDER TABS =====
+  var elHabitAddBtn = document.getElementById('habit-add-btn');
+  var elDeleteHabitBtn = document.getElementById('delete-habit-btn');
+
   function renderTabs() {
     elHabitTabs.innerHTML = '';
     for (var i = 0; i < habits.length; i++) {
@@ -1106,23 +1130,22 @@ body {
       tab.textContent = habits[i].name || 'Habit ' + (i + 1);
       tab.setAttribute('role', 'tab');
       tab.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
+      tab.setAttribute('aria-controls', 'drift-panel');
       tab.dataset.idx = i;
       tab.addEventListener('click', onTabClick);
       elHabitTabs.appendChild(tab);
     }
-    // Add "+" button if under max
+    // Show/hide external "+" button
     if (habits.length < MAX_HABITS) {
-      var addBtn = document.createElement('button');
-      addBtn.className = 'habit-tab habit-tab--add';
-      addBtn.textContent = '+';
-      addBtn.title = 'Add habit';
-      addBtn.setAttribute('aria-label', 'Add new habit');
-      addBtn.addEventListener('click', onAddHabit);
-      elHabitTabs.appendChild(addBtn);
+      elHabitAddBtn.style.display = '';
+    } else {
+      elHabitAddBtn.style.display = 'none';
     }
-    // Hide tabs row if only 1 habit and no room for add
-    elHabitTabs.style.display = (habits.length <= 1 && habits.length < MAX_HABITS) ? 'flex' : 'flex';
+    elHabitTabs.style.display = 'flex';
   }
+
+  elHabitAddBtn.addEventListener('click', onAddHabit);
+  elDeleteHabitBtn.addEventListener('click', function() { showDeleteModal(); });
 
   function onTabClick(e) {
     var idx = parseInt(e.currentTarget.dataset.idx, 10);
@@ -1136,11 +1159,16 @@ body {
     if (habits.length >= MAX_HABITS) return;
     // Show onboarding-style input via modal
     elModalTitle.textContent = 'New habit';
-    elModalText.innerHTML = '<input type="text" id="modal-habit-input" style="' +
-      'font-family:var(--font-family);font-size:16px;color:var(--color-text-primary);' +
-      'background:var(--color-bg);border:2px solid var(--color-dot-missed);border-radius:10px;' +
-      'padding:10px 14px;width:100%;text-align:center;margin-top:4px;" ' +
-      'placeholder="e.g. read" maxlength="60" autocomplete="off">';
+    var modalInput = document.createElement('input');
+    modalInput.type = 'text';
+    modalInput.id = 'modal-habit-input';
+    modalInput.placeholder = 'Habit name';
+    modalInput.maxLength = 30;
+    modalInput.className = 'modal-input';
+    modalInput.autocomplete = 'off';
+    modalInput.style.cssText = 'font-family:var(--font-family);font-size:16px;color:var(--color-text-primary);background:var(--color-bg);border:2px solid var(--color-dot-missed);border-radius:10px;padding:10px 14px;width:100%;text-align:center;margin-top:4px;';
+    elModalText.innerHTML = '';
+    elModalText.appendChild(modalInput);
     elModalCancel.textContent = 'Cancel';
     elModalConfirm.textContent = 'Add';
     modalAction = function() {
@@ -1272,6 +1300,8 @@ body {
       trendText = '';
     } else if (prevWeekDone === 0) {
       trendText = '\u2191 new';
+    } else if (weekDone === 0 && prevWeekDone > 0) {
+      trendText = 'No activity this week';
     } else {
       var diff = Math.round(((weekDone - prevWeekDone) / prevWeekDone) * 100);
       if (diff > 0) trendText = '\u2191 +' + diff + '%';
@@ -1605,15 +1635,37 @@ body {
     var KEY = 'drift_onboarding_done';
     try { if (localStorage.getItem(KEY)) return; } catch(e) { return; }
     var overlay = document.getElementById('drift-welcome');
+    var ctaBtn = document.getElementById('drift-welcome-start');
     overlay.style.display = '';
-    document.getElementById('drift-welcome-start').addEventListener('click', function() {
+
+    // Focus CTA on open
+    setTimeout(function() { ctaBtn.focus(); }, 100);
+
+    function dismissWelcome() {
       overlay.classList.add('hiding');
       setTimeout(function() {
         overlay.style.display = 'none';
         overlay.remove();
       }, 300);
       try { localStorage.setItem(KEY, '1'); } catch(e) {}
-    });
+      document.removeEventListener('keydown', welcomeKeyHandler);
+    }
+
+    // Focus trap: Tab stays on CTA
+    function welcomeKeyHandler(e) {
+      if (overlay.style.display === 'none') return;
+      if (e.key === 'Escape') {
+        dismissWelcome();
+        return;
+      }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        ctaBtn.focus();
+      }
+    }
+
+    document.addEventListener('keydown', welcomeKeyHandler);
+    ctaBtn.addEventListener('click', dismissWelcome);
   })();
 
 })();
