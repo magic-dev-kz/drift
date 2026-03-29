@@ -1,5 +1,38 @@
 # Drift — Changelog
 
+## v7.0 (2026-03-29)
+
+Feature update by Mario.
+
+### PWA Install Prompt
+- Captures the `beforeinstallprompt` event and stores the deferred prompt.
+- After 3+ visits (tracked via `drift_visit_count` in localStorage), a slide-up banner appears: "Install Drift for quick access and offline use".
+- "Install" button triggers the native install prompt; "Not now" dismisses permanently.
+- Banner uses glassmorphism styling consistent with the app.
+- Respects the standard A2HS flow (Chrome, Edge, Samsung Internet).
+
+### Keyboard Shortcuts
+- `Space` toggles today's done status for the active habit (when no input is focused).
+- `ArrowLeft` / `ArrowRight` switches between habits.
+- All shortcuts disabled when the modal is open or an input field is focused.
+
+### Auto-Backup Reminder
+- Once per week, a banner slides down from the top: "Back up your data? It's been a while."
+- "Export JSON" button triggers the existing JSON export and updates the reminder timestamp.
+- "Later" button dismisses and resets the 7-day timer.
+- Manual JSON exports also reset the timer, so active exporters never see the banner.
+- Reminder appears 2 seconds after load to avoid overwhelming the user.
+
+### Technical
+- Service worker cache updated to `drift-v7.0`.
+- Export version bumped to `7.0`.
+
+### Preserved
+- All existing features intact.
+- HTML structure and accessibility attributes unchanged.
+
+---
+
 ## v6.0 (2026-03-29)
 
 Quality polish by Mario.

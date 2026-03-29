@@ -1402,6 +1402,181 @@ body {
     animation: none;
   }
 }
+/* ===== PWA INSTALL BANNER ===== */
+
+.pwa-install-banner {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  width: calc(100% - 32px);
+  max-width: 380px;
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  text-align: center;
+  box-shadow: 0 8px 32px var(--color-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 60;
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 300ms ease;
+  opacity: 0;
+}
+
+.pwa-install-banner--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.pwa-install-banner-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.pwa-install-banner-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.pwa-install-btn {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-button-text);
+  background: var(--color-accent-lavender);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), background 200ms ease;
+}
+
+.pwa-install-btn:hover {
+  transform: scale(1.04);
+  background: var(--color-accent-mint);
+}
+
+.pwa-install-btn:active {
+  transform: scale(0.96);
+}
+
+.pwa-install-dismiss {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 12px;
+  transition: color 200ms ease;
+}
+
+.pwa-install-dismiss:hover {
+  color: var(--color-text-primary);
+}
+
+.pwa-install-btn:focus-visible,
+.pwa-install-dismiss:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
+/* ===== BACKUP REMINDER BANNER ===== */
+
+.backup-reminder {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  width: calc(100% - 32px);
+  max-width: 380px;
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 16px;
+  padding: 16px 20px;
+  text-align: center;
+  box-shadow: 0 4px 16px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 55;
+  transition: transform 400ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 300ms ease;
+  opacity: 0;
+}
+
+.backup-reminder--visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.backup-reminder-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.backup-reminder-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.backup-reminder-export {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-button-text);
+  background: var(--color-accent-mint);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 24px;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), background 200ms ease;
+}
+
+.backup-reminder-export:hover {
+  transform: scale(1.04);
+}
+
+.backup-reminder-export:active {
+  transform: scale(0.96);
+}
+
+.backup-reminder-dismiss {
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 12px;
+  transition: color 200ms ease;
+}
+
+.backup-reminder-dismiss:hover {
+  color: var(--color-text-primary);
+}
+
+.backup-reminder-export:focus-visible,
+.backup-reminder-dismiss:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
 .oc-footer{text-align:center;padding:20px 16px 24px;margin-top:24px}
 .oc-footer a{font-size:.78rem;color:var(--text-muted,var(--text-secondary,#888));text-decoration:none;opacity:.6;transition:opacity .2s}
 .oc-footer a:hover{opacity:1}
@@ -1519,6 +1694,24 @@ body {
     <button id="delete-habit-btn" class="export-btn" style="color:var(--color-accent-peach);">Delete habit</button>
   </div>
   </div><!-- /tabpanel -->
+</div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="pwa-install-banner" class="pwa-install-banner" role="alert">
+  <div class="pwa-install-banner-text">Install Drift for quick access and offline use</div>
+  <div class="pwa-install-banner-actions">
+    <button class="pwa-install-btn" id="pwa-install-btn">Install</button>
+    <button class="pwa-install-dismiss" id="pwa-install-dismiss">Not now</button>
+  </div>
+</div>
+
+<!-- BACKUP REMINDER -->
+<div id="backup-reminder" class="backup-reminder" role="alert">
+  <div class="backup-reminder-text">Back up your data? It's been a while.</div>
+  <div class="backup-reminder-actions">
+    <button class="backup-reminder-export" id="backup-export-btn">Export JSON</button>
+    <button class="backup-reminder-dismiss" id="backup-dismiss-btn">Later</button>
+  </div>
 </div>
 
 <!-- TOAST -->
@@ -2191,7 +2384,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '6.0',
+      version: '7.0',
       exported: new Date().toISOString(),
       habits: habits
     };
@@ -2661,11 +2854,148 @@ body {
     }
   });
 
+  // ===== PWA INSTALL PROMPT =====
+  var VISIT_COUNT_KEY = 'drift_visit_count';
+  var PWA_DISMISSED_KEY = 'drift_pwa_dismissed';
+  var deferredPrompt = null;
+
+  function incrementVisitCount() {
+    try {
+      var count = parseInt(localStorage.getItem(VISIT_COUNT_KEY) || '0', 10);
+      count++;
+      localStorage.setItem(VISIT_COUNT_KEY, String(count));
+      return count;
+    } catch(e) { return 0; }
+  }
+
+  function isPwaDismissed() {
+    try { return localStorage.getItem(PWA_DISMISSED_KEY) === '1'; } catch(e) { return false; }
+  }
+
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    var visits = parseInt(localStorage.getItem(VISIT_COUNT_KEY) || '0', 10);
+    if (visits >= 3 && !isPwaDismissed()) {
+      showPwaInstallBanner();
+    }
+  });
+
+  function showPwaInstallBanner() {
+    var banner = document.getElementById('pwa-install-banner');
+    requestAnimationFrame(function() {
+      banner.classList.add('pwa-install-banner--visible');
+    });
+  }
+
+  document.getElementById('pwa-install-btn').addEventListener('click', function() {
+    var banner = document.getElementById('pwa-install-banner');
+    banner.classList.remove('pwa-install-banner--visible');
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(result) {
+        deferredPrompt = null;
+        if (result.outcome === 'accepted') {
+          showToast('Drift installed!');
+        }
+      });
+    }
+  });
+
+  document.getElementById('pwa-install-dismiss').addEventListener('click', function() {
+    var banner = document.getElementById('pwa-install-banner');
+    banner.classList.remove('pwa-install-banner--visible');
+    try { localStorage.setItem(PWA_DISMISSED_KEY, '1'); } catch(e) {}
+  });
+
+  incrementVisitCount();
+
+  // ===== KEYBOARD SHORTCUTS =====
+  document.addEventListener('keydown', function(e) {
+    // Don't handle if modal is open or input is focused
+    if (!elModalOverlay.classList.contains('hidden')) return;
+    var isInputFocused = document.activeElement && (
+      document.activeElement.tagName === 'INPUT' ||
+      document.activeElement.tagName === 'TEXTAREA'
+    );
+    if (isInputFocused) return;
+
+    // Space = toggle today done
+    if (e.key === ' ' || e.code === 'Space') {
+      e.preventDefault();
+      if (habits.length > 0) {
+        toggleToday();
+      }
+      return;
+    }
+
+    // ArrowLeft = previous habit
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (habits.length > 1) {
+        activeIdx = (activeIdx - 1 + habits.length) % habits.length;
+        renderTabs();
+        renderCurrent(false);
+      }
+      return;
+    }
+
+    // ArrowRight = next habit
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (habits.length > 1) {
+        activeIdx = (activeIdx + 1) % habits.length;
+        renderTabs();
+        renderCurrent(false);
+      }
+      return;
+    }
+  });
+
+  // ===== AUTO-BACKUP REMINDER (weekly) =====
+  var BACKUP_LAST_KEY = 'drift_last_backup_reminder';
+  var BACKUP_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+  function checkBackupReminder() {
+    if (!habits || habits.length === 0) return;
+    try {
+      var last = parseInt(localStorage.getItem(BACKUP_LAST_KEY) || '0', 10);
+      var now = Date.now();
+      if (now - last < BACKUP_INTERVAL) return;
+      // Show backup reminder banner
+      var banner = document.getElementById('backup-reminder');
+      setTimeout(function() {
+        banner.classList.add('backup-reminder--visible');
+      }, 2000); // delay to not overwhelm on load
+    } catch(e) {}
+  }
+
+  document.getElementById('backup-export-btn').addEventListener('click', function() {
+    var banner = document.getElementById('backup-reminder');
+    banner.classList.remove('backup-reminder--visible');
+    try { localStorage.setItem(BACKUP_LAST_KEY, String(Date.now())); } catch(e) {}
+    exportJson();
+  });
+
+  document.getElementById('backup-dismiss-btn').addEventListener('click', function() {
+    var banner = document.getElementById('backup-reminder');
+    banner.classList.remove('backup-reminder--visible');
+    try { localStorage.setItem(BACKUP_LAST_KEY, String(Date.now())); } catch(e) {}
+  });
+
+  // Also mark backup timestamp on manual export
+  var _origExportJson = exportJson;
+  exportJson = function() {
+    _origExportJson();
+    try { localStorage.setItem(BACKUP_LAST_KEY, String(Date.now())); } catch(e) {}
+  };
+
   // ===== INIT =====
   habits = loadHabits() || [];
   if (habits.length > 0) {
     activeIdx = 0;
     showApp();
+    checkBackupReminder();
     // Auto-expand weekly insights on Sundays
     if (new Date().getDay() === 0 && !weeklyOpen) {
       weeklyOpen = true;
