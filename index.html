@@ -59,8 +59,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #1C1A18;
-    --color-bg-gradient: linear-gradient(145deg, #1C1A18 0%, #252220 40%, #1E1B28 100%);
+    --color-bg: #161412;
+    --color-bg-gradient: linear-gradient(145deg, #161412 0%, #1F1D1B 40%, #191722 100%);
     --color-surface: rgba(42, 39, 37, 0.72);
     --color-surface-solid: #2A2725;
     --color-text-primary: #E8E4DF;
@@ -70,7 +70,7 @@
     --color-accent-mint: #7AB8A4;
     --color-accent-peach: #D4A07A;
     --color-accent-apricot: #C88A58;
-    --color-accent-gold: #D4A43C;
+    --color-accent-gold: #E8C45A;
     --color-dot-done: #A09070;
     --color-dot-missed: #3A3633;
     --color-dot-today: #9B88C4;
@@ -1139,6 +1139,30 @@ body {
   border-radius: 6px;
 }
 
+.share-x-btn {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: 1px solid var(--color-button-bg);
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 200ms ease, background 200ms ease, border-color 200ms ease;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+.share-x-btn:hover {
+  color: var(--color-text-primary);
+  background: var(--color-button-bg);
+  border-color: var(--color-button-bg-active);
+}
+.share-x-btn:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
 /* ===== IMPORT/EXPORT ROW ===== */
 
 .data-actions-row {
@@ -1824,6 +1848,7 @@ body {
 
   <!-- Share Momentum -->
   <button id="share-btn" class="share-btn">Share momentum</button>
+  <button id="share-x-btn" class="share-x-btn">Share on X</button>
 
   <!-- Export & Delete -->
   <div class="data-actions-row">
@@ -2741,7 +2766,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '8.0',
+      version: '9.0',
       exported: new Date().toISOString(),
       habits: habits
     };
@@ -2920,6 +2945,15 @@ body {
   }
 
   elShareBtn.addEventListener('click', shareMomentum);
+
+  // ===== SHARE ON X =====
+  document.getElementById('share-x-btn').addEventListener('click', function() {
+    var h = active();
+    if (!h) return;
+    var totalDays = h.days.length;
+    var text = totalDays + ' day' + (totalDays !== 1 ? 's' : '') + ' of showing up \uD83C\uDF0A Track habits without guilt: https://magic-dev-kz.github.io/drift/';
+    window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank', 'noopener');
+  });
 
   // ===== WEEKLY SUMMARY NOTIFICATION (Sundays) =====
   var elWeeklySummaryBanner = document.getElementById('weekly-summary-banner');

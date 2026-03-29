@@ -1,5 +1,24 @@
 # Drift — Changelog
 
+## v9.0 (2026-03-29)
+
+### Share on X
+- "Share on X" button below share momentum card.
+- Pre-filled tweet: "X days of showing up. Track habits without guilt: [URL]".
+
+### Dark Mode Contrast Fix
+- Brightened gold accent from `#D4A43C` to `#E8C45A` for AA contrast compliance.
+- Darkened dark-mode background from `#1C1A18` to `#161412` for better contrast ratio.
+
+### Technical
+- Service worker cache updated to `drift-v9.0`.
+- Export version bumped to `9.0`.
+
+### Preserved
+- All existing features intact.
+
+---
+
 ## v8.0 (2026-03-29)
 
 Feature update by Mario.
