@@ -2454,6 +2454,12 @@ body {
       var tab = document.createElement('button');
       tab.className = 'habit-tab' + (i === activeIdx ? ' habit-tab--active' : '');
       tab.textContent = habits[i].name || 'Habit ' + (i + 1);
+      // v14: Show habit color as left border on tab pill
+      var HABIT_COLORS_MAP = {red:'#E74C3C',blue:'#3498DB',green:'#27AE60',purple:'#9B59B6',orange:'#E67E22',teal:'#1ABC9C'};
+      if (habits[i].color && HABIT_COLORS_MAP[habits[i].color]) {
+        tab.style.borderLeft = '3px solid ' + HABIT_COLORS_MAP[habits[i].color];
+        tab.style.paddingLeft = '10px';
+      }
       tab.setAttribute('role', 'tab');
       tab.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
       tab.setAttribute('aria-controls', 'drift-panel');
@@ -2528,11 +2534,42 @@ body {
     });
     elModalText.appendChild(catRow);
 
+    // v14: Color picker
+    var HABIT_COLORS = {red:'#E74C3C',blue:'#3498DB',green:'#27AE60',purple:'#9B59B6',orange:'#E67E22',teal:'#1ABC9C'};
+    var _modalColor = null;
+    var colorRow = document.createElement('div');
+    colorRow.style.cssText = 'display:flex;gap:8px;justify-content:center;margin-top:10px;';
+    Object.keys(HABIT_COLORS).forEach(function(cName) {
+      var swatch = document.createElement('button');
+      swatch.type = 'button';
+      swatch.title = cName;
+      swatch.style.cssText = 'width:28px;height:28px;border-radius:50%;border:2.5px solid transparent;background:' + HABIT_COLORS[cName] + ';cursor:pointer;transition:transform 200ms,border-color 200ms;padding:0;';
+      swatch.addEventListener('click', function() {
+        if (_modalColor === cName) {
+          _modalColor = null;
+          swatch.style.borderColor = 'transparent';
+          swatch.style.transform = 'scale(1)';
+        } else {
+          colorRow.querySelectorAll('button').forEach(function(b) {
+            b.style.borderColor = 'transparent';
+            b.style.transform = 'scale(1)';
+          });
+          _modalColor = cName;
+          swatch.style.borderColor = 'var(--color-text-primary)';
+          swatch.style.transform = 'scale(1.2)';
+        }
+      });
+      colorRow.appendChild(swatch);
+    });
+    elModalText.appendChild(colorRow);
+
     modalAction = function() {
       var inp = document.getElementById('modal-habit-input');
       var name = inp ? inp.value.trim() : '';
       if (!name) return false; // don't close
-      habits.push({ id: generateId(), name: name, days: [], category: _modalCat || null });
+      var newH = { id: generateId(), name: name, days: [], category: _modalCat || null };
+      if (_modalColor) newH.color = _modalColor;
+      habits.push(newH);
       activeIdx = habits.length - 1;
       saveHabits(habits);
       renderTabs();

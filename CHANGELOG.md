@@ -1,5 +1,20 @@
 # Drift — Changelog
 
+## v14.0 (2026-03-29)
+
+Feature update by Mario.
+
+### Habit Color Picker
+- When creating a new habit, 6 color swatches appear (red, blue, green, purple, orange, teal)
+- Click a swatch to assign that color to the habit; click again to deselect
+- Selected color is stored in the habit data and persists across sessions
+- Habit color is displayed as a left border accent on the tab pill for visual distinction
+
+### Technical
+- Service worker cache bumped to `drift-v14.0`
+
+---
+
 ## v13.0 (2026-03-29)
 
 Feature update by Mario.
