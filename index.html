@@ -1091,6 +1091,225 @@ body {
   color: var(--color-text-primary);
 }
 
+/* ===== WEEKLY INTENTION ===== */
+
+.intention-banner {
+  width: 100%;
+  text-align: center;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-text-phrase);
+  line-height: 1.5;
+  opacity: 0.85;
+  letter-spacing: 0.01em;
+}
+
+.intention-prompt {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  animation: fadeSlideUp 400ms ease both;
+}
+
+.intention-prompt-label {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.intention-input {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid var(--color-glass-border);
+  border-radius: 12px;
+  padding: 10px 16px;
+  width: 100%;
+  text-align: center;
+  transition: border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.intention-input:focus {
+  outline: none;
+  border-color: var(--color-accent-lavender);
+  box-shadow: 0 0 0 4px rgba(196, 181, 224, 0.18);
+}
+
+.intention-input::placeholder {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.intention-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.intention-btn {
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: 8px;
+  transition: color 200ms ease, background 200ms ease;
+}
+
+.intention-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(232, 228, 223, 0.35);
+}
+
+.intention-btn--save {
+  color: var(--color-button-text);
+  background: var(--color-button-bg);
+}
+
+.intention-btn--save:hover {
+  background: var(--color-button-bg-active);
+}
+
+/* ===== GENTLE REMINDER BANNER ===== */
+
+.gentle-reminder {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 380px;
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 16px;
+  padding: 14px 20px;
+  text-align: center;
+  box-shadow: 0 4px 16px var(--color-shadow);
+  animation: fadeSlideUp 400ms ease both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 50;
+}
+
+.gentle-reminder-text {
+  font-size: 13px;
+  color: var(--color-text-phrase);
+  line-height: 1.5;
+  font-style: italic;
+}
+
+.gentle-reminder-dismiss {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  transition: color 200ms ease;
+}
+
+.gentle-reminder-dismiss:hover {
+  color: var(--color-text-primary);
+}
+
+/* ===== MOMENTUM MILESTONE ===== */
+
+.milestone-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(61, 58, 55, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fade-in 300ms ease;
+  padding: 24px;
+}
+
+.milestone-card {
+  background: var(--color-surface);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--color-glass-border);
+  border-radius: 28px;
+  padding: 40px 32px 32px;
+  max-width: 320px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  animation: milestonePulse 600ms ease both;
+}
+
+@keyframes milestonePulse {
+  0% { opacity: 0; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.milestone-icon {
+  font-size: 48px;
+  line-height: 1;
+  animation: milestoneGlow 2s ease-in-out infinite;
+}
+
+@keyframes milestoneGlow {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 12px var(--streak-glow)); }
+}
+
+.milestone-message {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.5;
+}
+
+.milestone-dismiss {
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-button-text);
+  background: var(--color-button-bg);
+  border: none;
+  border-radius: 12px;
+  padding: 10px 28px;
+  cursor: pointer;
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1), background 200ms ease;
+}
+
+.milestone-dismiss:hover {
+  transform: scale(1.04) translateY(-1px);
+  background: var(--color-button-bg-active);
+}
+
+.milestone-dismiss:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
 /* ===== REDUCED MOTION ===== */
 
 @media (prefers-reduced-motion: reduce) {
@@ -1111,6 +1330,9 @@ body {
     display: none;
   }
   .heatmap-dot--today {
+    animation: none;
+  }
+  .milestone-icon {
     animation: none;
   }
 }
@@ -1140,8 +1362,36 @@ body {
   <button id="onboarding-btn" class="onboarding-btn" disabled>Start</button>
 </div>
 
+<!-- GENTLE REMINDER -->
+<div id="gentle-reminder" class="gentle-reminder" style="display:none;">
+  <div class="gentle-reminder-text">Haven't checked in today. No pressure — whenever you're ready. 🌿</div>
+  <button class="gentle-reminder-dismiss" id="gentle-reminder-dismiss">Got it</button>
+</div>
+
+<!-- MILESTONE -->
+<div id="milestone-overlay" class="milestone-overlay" style="display:none;">
+  <div class="milestone-card">
+    <div class="milestone-icon" id="milestone-icon" aria-hidden="true">🌱</div>
+    <div class="milestone-message" id="milestone-message"></div>
+    <button class="milestone-dismiss" id="milestone-dismiss">Thank you</button>
+  </div>
+</div>
+
 <!-- MAIN CARD -->
 <div id="app" class="card hidden">
+  <!-- Weekly Intention Banner -->
+  <div id="intention-banner" class="intention-banner" style="display:none;"></div>
+
+  <!-- Weekly Intention Prompt -->
+  <div id="intention-prompt" class="intention-prompt" style="display:none;">
+    <div class="intention-prompt-label">What would you like to focus on this week?</div>
+    <input type="text" id="intention-input" class="intention-input" placeholder="e.g. be more present" maxlength="120" autocomplete="off">
+    <div class="intention-actions">
+      <button class="intention-btn" id="intention-skip">Skip</button>
+      <button class="intention-btn intention-btn--save" id="intention-save">Set intention</button>
+    </div>
+  </div>
+
   <!-- Habit Tabs -->
   <div class="habit-tabs-wrap">
     <div id="habit-tabs" class="habit-tabs" role="tablist" aria-label="Habits"></div>
@@ -1865,7 +2115,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '4.0',
+      version: '5.0',
       exported: new Date().toISOString(),
       habits: habits
     };
@@ -2119,6 +2369,8 @@ body {
     renderTabs();
     renderCurrent(false);
     checkWeeklySummary();
+    if (typeof checkIntention === 'function') checkIntention();
+    if (typeof checkGentleReminder === 'function') checkGentleReminder();
   }
 
   // ===== EVENT LISTENERS =====
@@ -2147,6 +2399,189 @@ body {
       clearTimeout(longPressTimer);
       longPressTimer = null;
       e.preventDefault();
+    }
+  });
+
+  // ===== WEEKLY INTENTION =====
+  var elIntentionBanner = document.getElementById('intention-banner');
+  var elIntentionPrompt = document.getElementById('intention-prompt');
+  var elIntentionInput = document.getElementById('intention-input');
+  var elIntentionSave = document.getElementById('intention-save');
+  var elIntentionSkip = document.getElementById('intention-skip');
+
+  function getISOWeek(d) {
+    var date = new Date(d.getTime());
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    return date.getFullYear() + '-W' + String(1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7)).padStart(2, '0');
+  }
+
+  function getIntentionKey() {
+    return 'drift_intention_' + getISOWeek(new Date());
+  }
+
+  function getIntentionSkipKey() {
+    return 'drift_intention_skip_' + getISOWeek(new Date());
+  }
+
+  function loadIntention() {
+    try { return localStorage.getItem(getIntentionKey()) || ''; } catch(e) { return ''; }
+  }
+
+  function saveIntention(text) {
+    try { localStorage.setItem(getIntentionKey(), text); } catch(e) {}
+  }
+
+  function checkIntention() {
+    var intention = loadIntention();
+    var now = new Date();
+    var dayOfWeek = now.getDay();
+
+    if (intention) {
+      elIntentionBanner.textContent = '\uD83C\uDF3F This week: \u201C' + intention + '\u201D';
+      elIntentionBanner.style.display = '';
+      elIntentionPrompt.style.display = 'none';
+    } else {
+      elIntentionBanner.style.display = 'none';
+      if (dayOfWeek <= 1) {
+        var skipped = false;
+        try { skipped = !!localStorage.getItem(getIntentionSkipKey()); } catch(e) {}
+        if (!skipped) {
+          elIntentionPrompt.style.display = '';
+        } else {
+          elIntentionPrompt.style.display = 'none';
+        }
+      } else {
+        elIntentionPrompt.style.display = 'none';
+      }
+    }
+  }
+
+  elIntentionSave.addEventListener('click', function() {
+    var text = elIntentionInput.value.trim();
+    if (!text) return;
+    saveIntention(text);
+    elIntentionInput.value = '';
+    checkIntention();
+    showToast('Intention set');
+  });
+
+  elIntentionInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && elIntentionInput.value.trim()) {
+      elIntentionSave.click();
+    }
+  });
+
+  elIntentionSkip.addEventListener('click', function() {
+    try { localStorage.setItem(getIntentionSkipKey(), '1'); } catch(e) {}
+    elIntentionPrompt.style.display = 'none';
+  });
+
+  // Enhance weekly summary with intention reflection
+  var _origCheckWeeklySummary = checkWeeklySummary;
+  checkWeeklySummary = function() {
+    _origCheckWeeklySummary();
+    if (elWeeklySummaryBanner.style.display !== 'none') {
+      var intention = loadIntention();
+      if (intention) {
+        var existing = elWeeklySummaryDetail.textContent;
+        elWeeklySummaryDetail.textContent = existing + ' Your intention was: \u201C' + intention + '\u201D';
+      }
+    }
+  };
+
+  // ===== GENTLE REMINDER (in-app, after 18:00) =====
+  var elGentleReminder = document.getElementById('gentle-reminder');
+  var elGentleReminderDismiss = document.getElementById('gentle-reminder-dismiss');
+
+  function checkGentleReminder() {
+    var now = new Date();
+    if (now.getHours() < 18) return;
+
+    var dismissKey = 'drift_reminder_dismissed_' + todayStr();
+    try { if (localStorage.getItem(dismissKey)) return; } catch(e) { return; }
+
+    var anyDoneToday = false;
+    var today = todayStr();
+    for (var i = 0; i < habits.length; i++) {
+      if (habits[i].days.indexOf(today) !== -1) {
+        anyDoneToday = true;
+        break;
+      }
+    }
+
+    if (!anyDoneToday) {
+      elGentleReminder.style.display = '';
+    }
+  }
+
+  elGentleReminderDismiss.addEventListener('click', function() {
+    elGentleReminder.style.display = 'none';
+    try { localStorage.setItem('drift_reminder_dismissed_' + todayStr(), '1'); } catch(e) {}
+  });
+
+  // ===== MOMENTUM MILESTONES =====
+  var elMilestoneOverlay = document.getElementById('milestone-overlay');
+  var elMilestoneIcon = document.getElementById('milestone-icon');
+  var elMilestoneMessage = document.getElementById('milestone-message');
+  var elMilestoneDismiss = document.getElementById('milestone-dismiss');
+
+  var MILESTONES = [
+    { days: 7,  icon: '\uD83C\uDF31', message: '7 days of showing up. That\u2019s beautiful.' },
+    { days: 14, icon: '\uD83C\uDF3F', message: '14 days of gentle momentum. You\u2019re growing.' },
+    { days: 21, icon: '\uD83C\uDF33', message: '21 days. A habit is taking root.' },
+    { days: 30, icon: '\u2728',        message: '30 days of quiet dedication. Remarkable.' }
+  ];
+
+  function checkMilestones() {
+    var h = active();
+    if (!h) return;
+
+    for (var m = MILESTONES.length - 1; m >= 0; m--) {
+      var milestone = MILESTONES[m];
+      var milestoneDays = milestone.days;
+
+      var doneInWindow = 0;
+      for (var d = 0; d < milestoneDays; d++) {
+        if (h.days.indexOf(daysAgoStr(d)) !== -1) doneInWindow++;
+      }
+      var pct = (doneInWindow / milestoneDays) * 100;
+
+      if (pct > 50) {
+        var milestoneKey = 'drift_milestone_' + h.id + '_' + milestoneDays;
+        try { if (localStorage.getItem(milestoneKey)) continue; } catch(e) { continue; }
+
+        elMilestoneIcon.textContent = milestone.icon;
+        elMilestoneMessage.textContent = milestone.message;
+        elMilestoneOverlay.style.display = '';
+        elMilestoneOverlay.dataset.key = milestoneKey;
+        break;
+      }
+    }
+  }
+
+  elMilestoneDismiss.addEventListener('click', function() {
+    var key = elMilestoneOverlay.dataset.key;
+    elMilestoneOverlay.style.display = 'none';
+    if (key) {
+      try { localStorage.setItem(key, '1'); } catch(e) {}
+    }
+  });
+
+  elMilestoneOverlay.addEventListener('click', function(e) {
+    if (e.target === elMilestoneOverlay) {
+      elMilestoneDismiss.click();
+    }
+  });
+
+  // After marking done: check milestones & hide gentle reminder
+  elBtnDone.addEventListener('click', function() {
+    var h = active();
+    if (h && h.days.indexOf(todayStr()) !== -1) {
+      setTimeout(checkMilestones, 600);
+      elGentleReminder.style.display = 'none';
+      try { localStorage.setItem('drift_reminder_dismissed_' + todayStr(), '1'); } catch(e) {}
     }
   });
 
