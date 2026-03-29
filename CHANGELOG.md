@@ -1,5 +1,41 @@
 # Drift — Changelog
 
+## v6.0 (2026-03-29)
+
+Quality polish by Mario.
+
+### Momentum Ring Animation
+- Ring already had CSS transition on `stroke-dashoffset` (800ms cubic-bezier). Verified smooth fill animation on momentum updates.
+
+### Habit Card Pulse on Done
+- When marking a habit as done, the entire card emits a soft glow pulse animation using the streak gradient color.
+- `cardDonePulse` keyframe: glow expands to 40px then fades back.
+- Animation removed after 850ms; respects `prefers-reduced-motion`.
+
+### Focus-Visible Audit
+- Added `:focus-visible` outlines to all previously uncovered interactive elements:
+  - Intention input and buttons
+  - Weekly summary dismiss button
+  - Gentle reminder dismiss button
+  - Habit add (+) button
+  - Import/export/delete action buttons
+  - Heatmap dots
+- All use consistent `2px solid var(--color-accent-lavender)` with `2-3px` offset.
+
+### Phrase Rotation Fade Transition
+- Phrase changes now use a proper 400ms fade-out + slide-down, then fade-in + slide-up transition.
+- Uses CSS classes (`phrase--fading`, `phrase--entering`) instead of inline opacity manipulation.
+- Spring easing on transform for a gentle, polished feel.
+
+### Technical
+- Service worker cache updated to `drift-v6.0`.
+
+### Preserved
+- All existing features intact.
+- HTML structure and accessibility attributes unchanged.
+
+---
+
 ## v5.0 (2026-03-29)
 
 Feature update by Mario.
