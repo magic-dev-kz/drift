@@ -542,6 +542,30 @@ body {
   animation: completePulse 600ms ease;
 }
 
+/* v15: Rest Day button */
+.btn-rest {
+  font-family: var(--font-family);
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px dashed var(--color-text-secondary);
+  border-radius: var(--button-radius);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 20px;
+  margin-top: 8px;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-rest:hover { background: rgba(155,136,196,.12); border-color: var(--color-accent-lavender); color: var(--color-text-primary); }
+.btn-rest--active { background: rgba(155,136,196,.18); border-style: solid; color: var(--color-accent-lavender); border-color: var(--color-accent-lavender); }
+
+/* v15: Rest day dot in heatmap */
+.heatmap-dot--rest {
+  background: var(--color-text-secondary) !important;
+  opacity: 0.5;
+}
+
 @keyframes completePulse {
   0% { box-shadow: 0 4px 16px var(--color-shadow-lg), 0 0 0 0 var(--streak-glow); }
   50% { box-shadow: 0 4px 16px var(--color-shadow-lg), 0 0 28px var(--streak-glow); }
@@ -1989,6 +2013,7 @@ body {
   </div>
 
   <button id="btn-done" class="btn-done">Done</button>
+  <button id="btn-rest" class="btn-rest" aria-label="Mark as rest day">Rest Day</button>
   <div id="first-visit-tip" class="first-visit-tip" style="display:none" aria-live="polite">Tap Done to start building momentum</div>
 
   <div id="heatmap" class="heatmap" role="img" aria-label="0 of 30 days marked"></div>
@@ -2154,6 +2179,7 @@ body {
   var elMomentumText = document.getElementById('momentum-text');
   var elPhrase = document.getElementById('phrase');
   var elBtnDone = document.getElementById('btn-done');
+  var elBtnRest = document.getElementById('btn-rest');
   var elHeatmap = document.getElementById('heatmap');
   var elWeeklyToggle = document.getElementById('weekly-toggle');
   var elWeeklyArrow = document.getElementById('weekly-arrow');
@@ -2170,7 +2196,7 @@ body {
   var elModalConfirm = document.getElementById('modal-confirm');
 
   // ===== STATE =====
-  var habits = [];        // array of {id, name, days:[]}
+  var habits = [];        // array of {id, name, days:[], restDays:[]}
   var activeIdx = 0;      // index into habits[]
   var weeklyOpen = false;
   var modalAction = null;  // function to call on confirm
@@ -2342,26 +2368,27 @@ body {
     });
   }
 
-  // v8: Streak record
+  // v8: Streak record (v15: rest days don't break streak)
   function calcCurrentStreak(h) {
     if (!h || !h.days || h.days.length === 0) return 0;
+    var restDays = h.restDays || [];
     var today = todayStr();
     var checkDate = today;
-    if (h.days.indexOf(today) === -1) {
+    if (h.days.indexOf(today) === -1 && restDays.indexOf(today) === -1) {
       // Check yesterday
       checkDate = daysAgoStr(1);
-      if (h.days.indexOf(checkDate) === -1) return 0;
+      if (h.days.indexOf(checkDate) === -1 && restDays.indexOf(checkDate) === -1) return 0;
     }
     var streak = 0;
     var d = new Date();
-    if (h.days.indexOf(today) === -1) {
+    if (h.days.indexOf(today) === -1 && restDays.indexOf(today) === -1) {
       d.setDate(d.getDate() - 1);
     }
     while (true) {
       var key = d.getFullYear() + '-' +
         String(d.getMonth() + 1).padStart(2, '0') + '-' +
         String(d.getDate()).padStart(2, '0');
-      if (h.days.indexOf(key) === -1) break;
+      if (h.days.indexOf(key) === -1 && restDays.indexOf(key) === -1) break;
       streak++;
       d.setDate(d.getDate() - 1);
     }
@@ -2626,11 +2653,20 @@ body {
     // Button state
     var today = todayStr();
     var isDoneToday = h.days.indexOf(today) !== -1;
+    var isRestToday = h.restDays && h.restDays.indexOf(today) !== -1;
     elBtnDone.textContent = isDoneToday ? 'Done!' : 'Done';
     if (isDoneToday) {
       elBtnDone.classList.add('btn-done--completed');
     } else {
       elBtnDone.classList.remove('btn-done--completed');
+    }
+    // v15: rest day button state
+    if (isRestToday) {
+      elBtnRest.classList.add('btn-rest--active');
+      elBtnRest.textContent = 'Resting \u2615';
+    } else {
+      elBtnRest.classList.remove('btn-rest--active');
+      elBtnRest.textContent = 'Rest Day';
     }
 
     // Heatmap
@@ -2675,15 +2711,21 @@ body {
       var d = new Date(day + 'T00:00:00');
       dot.title = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + (isDone ? ' \u2713' : '');
 
+      var isRest = h.restDays && h.restDays.indexOf(day) !== -1;
       if (day === today) {
         dot.classList.add('heatmap-dot--today');
-        dot.title = 'Today' + (isDone ? ' \u2713' : '');
+        dot.title = 'Today' + (isDone ? ' \u2713' : isRest ? ' (rest)' : '');
         if (isDone) {
           dot.classList.add('heatmap-dot--done');
           if (animateToday) dot.classList.add('heatmap-dot--animate');
+        } else if (isRest) {
+          dot.classList.add('heatmap-dot--rest');
         }
       } else if (isDone) {
         dot.classList.add('heatmap-dot--done');
+      } else if (isRest) {
+        dot.classList.add('heatmap-dot--rest');
+        dot.title = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' (rest)';
       }
       elHeatmap.appendChild(dot);
     }
@@ -2894,6 +2936,26 @@ body {
 
     renderCurrent(marking);
     renderTabs(); // update tab text if needed
+  }
+
+  // ===== v15: REST DAY TOGGLE =====
+  function toggleRestDay() {
+    var h = active();
+    if (!h) return;
+    if (!h.restDays) h.restDays = [];
+    var today = todayStr();
+    var idx = h.restDays.indexOf(today);
+    if (idx === -1) {
+      h.restDays.push(today);
+      // Remove from done days if present
+      var doneIdx = h.days.indexOf(today);
+      if (doneIdx !== -1) h.days.splice(doneIdx, 1);
+    } else {
+      h.restDays.splice(idx, 1);
+    }
+    saveHabits(habits);
+    renderCurrent(false);
+    renderTabs();
   }
 
   // ===== HABIT NAME CHANGE =====
@@ -3368,6 +3430,7 @@ body {
   elOnboardingBtn.addEventListener('click', finishOnboarding);
 
   elBtnDone.addEventListener('click', toggleToday);
+  elBtnRest.addEventListener('click', toggleRestDay);
 
   elHabitName.addEventListener('change', onHabitNameChange);
   elHabitName.addEventListener('blur', onHabitNameChange);

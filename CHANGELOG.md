@@ -1,5 +1,22 @@
 # Drift — Changelog
 
+## v15.0 (2026-03-29) — Rest Day Indicator
+
+Feature update by Mario.
+
+### Rest Day Indicator
+- New "Rest Day" button below the Done button lets you mark a day as rest
+- Rest days show as grey dots in the heatmap (distinct from done/missed)
+- Rest days do NOT break streaks -- streak calculation skips over rest days
+- Toggling rest day on a done day removes the done marking
+- Rest day data stored in habit's `restDays` array, persisted in localStorage
+- Button shows "Resting" state with coffee emoji when active
+
+### Technical
+- Service worker cache bumped to `drift-v15.0`
+
+---
+
 ## v14.0 (2026-03-29)
 
 Feature update by Mario.
