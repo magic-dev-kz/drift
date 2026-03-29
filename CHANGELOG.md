@@ -1,5 +1,17 @@
 # Drift — Changelog
 
+## v12.0 (2026-03-29)
+
+### Added
+- **Habit completion chime** -- soft C5 sine wave chime (200ms, Web Audio API) plays on marking a habit done
+- **Momentum milestone celebration** -- golden glow border animation on the card when momentum reaches 100%
+- **Data size indicator** -- "Using X KB of storage" shown below export/delete actions
+
+### Technical
+- Service worker cache bumped to `drift-v12.0`
+
+---
+
 ## v11.0 (2026-03-29)
 - Onboarding overlay: animated CSS wave/water visual at bottom (matches brand)
 - Done button glow stronger on press (double-layer streak glow)

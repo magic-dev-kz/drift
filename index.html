@@ -1497,6 +1497,27 @@ body {
   animation: cardDonePulse 800ms ease forwards;
 }
 
+/* v12: Golden glow border on 100% momentum */
+@keyframes goldenGlow {
+  0%   { box-shadow: 0 8px 32px var(--color-shadow-lg), 0 0 0 0 rgba(232, 184, 75, 0); }
+  50%  { box-shadow: 0 8px 32px var(--color-shadow-lg), 0 0 28px rgba(232, 184, 75, 0.45), 0 0 56px rgba(232, 184, 75, 0.15); }
+  100% { box-shadow: 0 8px 32px var(--color-shadow-lg), 0 0 20px rgba(232, 184, 75, 0.35), 0 0 48px rgba(232, 184, 75, 0.1); }
+}
+.card--golden-glow {
+  border-color: var(--color-accent-gold) !important;
+  animation: goldenGlow 1.8s ease-in-out infinite alternate;
+}
+
+/* v12: Data size indicator */
+.storage-indicator {
+  text-align: center;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  margin-top: 12px;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
+}
+
 /* ===== PHRASE FADE TRANSITION ===== */
 
 .phrase--fading {
@@ -1900,6 +1921,7 @@ body {
     <input type="file" id="import-file-input" class="import-file-input" accept=".json,application/json">
     <button id="delete-habit-btn" class="export-btn" style="color:var(--color-accent-peach);">Delete habit</button>
   </div>
+  <div id="storage-indicator" class="storage-indicator"></div>
   </div><!-- /tabpanel -->
 </div>
 
@@ -2468,6 +2490,16 @@ body {
 
     // v8: Momentum graph
     renderMomentumGraph(h);
+
+    // v12: Golden glow at 100% momentum
+    if (momentum === 100) {
+      elApp.classList.add('card--golden-glow');
+    } else {
+      elApp.classList.remove('card--golden-glow');
+    }
+
+    // v12: Storage size indicator
+    updateStorageIndicator();
   }
 
   function renderHeatmap(h, animateToday) {
@@ -2606,6 +2638,8 @@ body {
       if (navigator.vibrate) {
         try { navigator.vibrate(10); } catch(e) {}
       }
+      // v12: Soft chime sound on mark done
+      playCompletionChime();
       // Card pulse animation
       elApp.classList.remove('card--done-pulse');
       void elApp.offsetWidth;
@@ -3422,6 +3456,45 @@ body {
     _origExportJson();
     try { localStorage.setItem(BACKUP_LAST_KEY, String(Date.now())); } catch(e) {}
   };
+
+  // ===== v12: COMPLETION CHIME (Web Audio API) =====
+  function playCompletionChime() {
+    try {
+      var AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      var ctx = new AudioCtx();
+      var osc = ctx.createOscillator();
+      var gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+      gain.gain.setValueAtTime(0.18, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.2);
+      osc.onended = function() { ctx.close(); };
+    } catch(e) {}
+  }
+
+  // ===== v12: STORAGE SIZE INDICATOR =====
+  function updateStorageIndicator() {
+    var el = document.getElementById('storage-indicator');
+    if (!el) return;
+    try {
+      var total = 0;
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('drift') === 0) {
+          total += key.length + (localStorage.getItem(key) || '').length;
+        }
+      }
+      var kb = (total * 2 / 1024).toFixed(1); // UTF-16 = 2 bytes per char
+      el.textContent = 'Using ' + kb + ' KB of storage';
+    } catch(e) {
+      el.textContent = '';
+    }
+  }
 
   // ===== INIT =====
   habits = loadHabits() || [];
