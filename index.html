@@ -283,6 +283,114 @@ body {
   outline-offset: 2px;
 }
 
+/* ===== HABIT CATEGORY TAG ===== */
+
+.habit-category-wrap {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+
+.habit-cat-chip {
+  font-family: var(--font-family);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1.5px solid var(--color-dot-missed);
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.habit-cat-chip:hover {
+  border-color: var(--color-text-secondary);
+  color: var(--color-text-primary);
+}
+
+.habit-cat-chip--active {
+  background: color-mix(in srgb, var(--chip-color, var(--color-accent-lavender)) 18%, transparent);
+  border-color: var(--chip-color, var(--color-accent-lavender));
+  color: var(--chip-color, var(--color-accent-lavender));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--chip-color, var(--color-accent-lavender)) 25%, transparent);
+}
+
+.habit-cat-chip:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
+.habit-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+}
+
+.habit-cat-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 6px color-mix(in srgb, var(--dot-color, transparent) 40%, transparent);
+}
+
+/* ===== STREAK RECORD ===== */
+
+.streak-record {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-accent-gold);
+  text-align: center;
+  letter-spacing: 0.02em;
+  animation: fadeSlideUp 400ms ease both;
+  margin-top: -4px;
+}
+
+/* ===== MOMENTUM GRAPH (SVG line chart) ===== */
+
+.momentum-graph-wrap {
+  width: 100%;
+  max-width: 280px;
+  margin-top: -8px;
+}
+
+.momentum-graph-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-align: center;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.momentum-graph-svg {
+  width: 100%;
+  height: 48px;
+  display: block;
+}
+
+.momentum-graph-area {
+  fill: url(#momentumGradient);
+  opacity: 0.3;
+}
+
+.momentum-graph-line {
+  fill: none;
+  stroke: var(--color-accent-lavender);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 4px var(--streak-glow));
+}
+
 /* ===== HABIT NAME ===== */
 
 .habit-name {
@@ -1643,7 +1751,24 @@ body {
   </div>
 
   <div id="drift-panel" role="tabpanel" aria-label="Habit details">
-  <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="My habit">
+
+  <!-- Streak Record -->
+  <div id="streak-record" class="streak-record" style="display:none;"></div>
+
+  <!-- Habit Name + Category Dot -->
+  <div class="habit-name-row">
+    <span id="habit-cat-dot" class="habit-cat-dot" style="display:none;" aria-hidden="true"></span>
+    <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="My habit">
+  </div>
+
+  <!-- Category selector -->
+  <div id="habit-category-wrap" class="habit-category-wrap" aria-label="Habit category">
+    <button type="button" class="habit-cat-chip" data-cat="Health">Health</button>
+    <button type="button" class="habit-cat-chip" data-cat="Work">Work</button>
+    <button type="button" class="habit-cat-chip" data-cat="Creative">Creative</button>
+    <button type="button" class="habit-cat-chip" data-cat="Learning">Learning</button>
+    <button type="button" class="habit-cat-chip" data-cat="Social">Social</button>
+  </div>
 
   <div class="momentum-meter" aria-label="Momentum: 0%">
     <svg class="momentum-svg" viewBox="0 0 200 200">
@@ -1656,6 +1781,21 @@ body {
   </div>
 
   <div id="phrase" class="phrase">The first step matters most</div>
+
+  <!-- Momentum Graph (30-day trend) -->
+  <div id="momentum-graph-wrap" class="momentum-graph-wrap">
+    <div class="momentum-graph-label">30-day trend</div>
+    <svg id="momentum-graph" class="momentum-graph-svg" viewBox="0 0 280 48" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="momentumGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--color-accent-lavender)" stop-opacity="0.4"/>
+          <stop offset="100%" stop-color="var(--color-accent-lavender)" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path id="momentum-graph-area" class="momentum-graph-area" d=""/>
+      <polyline id="momentum-graph-line" class="momentum-graph-line" points=""/>
+    </svg>
+  </div>
 
   <button id="btn-done" class="btn-done">Done</button>
 
@@ -1922,6 +2062,182 @@ body {
   var elHabitAddBtn = document.getElementById('habit-add-btn');
   var elDeleteHabitBtn = document.getElementById('delete-habit-btn');
 
+  // v8 DOM refs
+  var elStreakRecord = document.getElementById('streak-record');
+  var elHabitCatDot = document.getElementById('habit-cat-dot');
+  var elHabitCategoryWrap = document.getElementById('habit-category-wrap');
+  var elMomentumGraphLine = document.getElementById('momentum-graph-line');
+  var elMomentumGraphArea = document.getElementById('momentum-graph-area');
+  var elMomentumGraphWrap = document.getElementById('momentum-graph-wrap');
+
+  // v8: Category colors
+  var HABIT_CAT_COLORS = {
+    Health: '#34D399',
+    Work: '#4A9EFF',
+    Creative: '#FBBF24',
+    Learning: '#A78BFA',
+    Social: '#F472B6'
+  };
+
+  // v8: Category chip handlers
+  (function initHabitCategoryChips() {
+    var chips = elHabitCategoryWrap.querySelectorAll('.habit-cat-chip');
+    chips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var h = active();
+        if (!h) return;
+        var cat = chip.getAttribute('data-cat');
+        if (h.category === cat) {
+          // deselect
+          h.category = null;
+          chip.classList.remove('habit-cat-chip--active');
+          chip.style.removeProperty('--chip-color');
+        } else {
+          // deselect previous
+          var prev = elHabitCategoryWrap.querySelector('.habit-cat-chip--active');
+          if (prev) {
+            prev.classList.remove('habit-cat-chip--active');
+            prev.style.removeProperty('--chip-color');
+          }
+          h.category = cat;
+          chip.classList.add('habit-cat-chip--active');
+          chip.style.setProperty('--chip-color', HABIT_CAT_COLORS[cat]);
+        }
+        saveHabits(habits);
+        renderCatDot(h);
+      });
+    });
+  })();
+
+  function renderCatDot(h) {
+    if (h && h.category && HABIT_CAT_COLORS[h.category]) {
+      elHabitCatDot.style.display = '';
+      elHabitCatDot.style.background = HABIT_CAT_COLORS[h.category];
+      elHabitCatDot.style.setProperty('--dot-color', HABIT_CAT_COLORS[h.category]);
+    } else {
+      elHabitCatDot.style.display = 'none';
+    }
+  }
+
+  function renderCategoryChips(h) {
+    var chips = elHabitCategoryWrap.querySelectorAll('.habit-cat-chip');
+    chips.forEach(function(chip) {
+      chip.classList.remove('habit-cat-chip--active');
+      chip.style.removeProperty('--chip-color');
+      var cat = chip.getAttribute('data-cat');
+      if (h && h.category === cat) {
+        chip.classList.add('habit-cat-chip--active');
+        chip.style.setProperty('--chip-color', HABIT_CAT_COLORS[cat]);
+      }
+    });
+  }
+
+  // v8: Streak record
+  function calcCurrentStreak(h) {
+    if (!h || !h.days || h.days.length === 0) return 0;
+    var today = todayStr();
+    var checkDate = today;
+    if (h.days.indexOf(today) === -1) {
+      // Check yesterday
+      checkDate = daysAgoStr(1);
+      if (h.days.indexOf(checkDate) === -1) return 0;
+    }
+    var streak = 0;
+    var d = new Date();
+    if (h.days.indexOf(today) === -1) {
+      d.setDate(d.getDate() - 1);
+    }
+    while (true) {
+      var key = d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+      if (h.days.indexOf(key) === -1) break;
+      streak++;
+      d.setDate(d.getDate() - 1);
+    }
+    return streak;
+  }
+
+  function calcBestStreak(h) {
+    if (!h || !h.days || h.days.length === 0) return 0;
+    var sorted = h.days.slice().sort();
+    var best = 1;
+    var current = 1;
+    for (var i = 1; i < sorted.length; i++) {
+      var prev = new Date(sorted[i - 1] + 'T00:00:00');
+      var curr = new Date(sorted[i] + 'T00:00:00');
+      var diff = (curr - prev) / 86400000;
+      if (diff === 1) {
+        current++;
+        if (current > best) best = current;
+      } else if (diff > 1) {
+        current = 1;
+      }
+      // diff === 0 means duplicate, ignore
+    }
+    return best;
+  }
+
+  function renderStreakRecord(h) {
+    var currentStreak = calcCurrentStreak(h);
+    var bestStreak = calcBestStreak(h);
+    if (bestStreak > 0 && currentStreak >= bestStreak && currentStreak > 1) {
+      elStreakRecord.textContent = 'Personal best: ' + bestStreak + ' days!';
+      elStreakRecord.style.display = '';
+    } else if (bestStreak > currentStreak && bestStreak > 1) {
+      elStreakRecord.textContent = 'Personal best: ' + bestStreak + ' days';
+      elStreakRecord.style.display = '';
+    } else {
+      elStreakRecord.style.display = 'none';
+    }
+  }
+
+  // v8: Momentum Graph (30-day rolling momentum at each point)
+  function renderMomentumGraph(h) {
+    if (!h) {
+      elMomentumGraphWrap.style.display = 'none';
+      return;
+    }
+    elMomentumGraphWrap.style.display = '';
+
+    var W = 280;
+    var H = 48;
+    var padding = 4;
+    var usableW = W - padding * 2;
+    var usableH = H - padding * 2;
+
+    // Calculate rolling 7-day momentum for each of the last 30 days
+    var points = [];
+    for (var day = 29; day >= 0; day--) {
+      var count = 0;
+      for (var j = 0; j < 7; j++) {
+        if (h.days.indexOf(daysAgoStr(day + j)) !== -1) count++;
+      }
+      var pct = count / 7;
+      points.push(pct);
+    }
+
+    // Build polyline points
+    var linePoints = [];
+    for (var i = 0; i < points.length; i++) {
+      var x = padding + (i / (points.length - 1)) * usableW;
+      var y = padding + (1 - points[i]) * usableH;
+      linePoints.push(x.toFixed(1) + ',' + y.toFixed(1));
+    }
+
+    elMomentumGraphLine.setAttribute('points', linePoints.join(' '));
+
+    // Build area path (fill under the line)
+    var areaPath = 'M' + (padding) + ',' + (H - padding);
+    for (var k = 0; k < points.length; k++) {
+      var ax = padding + (k / (points.length - 1)) * usableW;
+      var ay = padding + (1 - points[k]) * usableH;
+      areaPath += ' L' + ax.toFixed(1) + ',' + ay.toFixed(1);
+    }
+    areaPath += ' L' + (W - padding) + ',' + (H - padding) + ' Z';
+    elMomentumGraphArea.setAttribute('d', areaPath);
+  }
+
   function renderTabs() {
     elHabitTabs.innerHTML = '';
     for (var i = 0; i < habits.length; i++) {
@@ -1971,11 +2287,42 @@ body {
     elModalText.appendChild(modalInput);
     elModalCancel.textContent = 'Cancel';
     elModalConfirm.textContent = 'Add';
+    // v8: Add category selector in modal
+    var catRow = document.createElement('div');
+    catRow.style.cssText = 'display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:8px;';
+    var _modalCat = null;
+    ['Health','Work','Creative','Learning','Social'].forEach(function(cat) {
+      var chip = document.createElement('button');
+      chip.type = 'button';
+      chip.textContent = cat;
+      chip.style.cssText = 'font-family:var(--font-family);font-size:11px;font-weight:600;padding:4px 10px;border-radius:16px;border:1.5px solid var(--color-dot-missed);background:none;color:var(--color-text-secondary);cursor:pointer;transition:all 200ms;';
+      chip.addEventListener('click', function() {
+        if (_modalCat === cat) {
+          _modalCat = null;
+          chip.style.borderColor = 'var(--color-dot-missed)';
+          chip.style.color = 'var(--color-text-secondary)';
+          chip.style.background = 'none';
+        } else {
+          catRow.querySelectorAll('button').forEach(function(b) {
+            b.style.borderColor = 'var(--color-dot-missed)';
+            b.style.color = 'var(--color-text-secondary)';
+            b.style.background = 'none';
+          });
+          _modalCat = cat;
+          chip.style.borderColor = HABIT_CAT_COLORS[cat];
+          chip.style.color = HABIT_CAT_COLORS[cat];
+          chip.style.background = 'rgba(255,255,255,0.06)';
+        }
+      });
+      catRow.appendChild(chip);
+    });
+    elModalText.appendChild(catRow);
+
     modalAction = function() {
       var inp = document.getElementById('modal-habit-input');
       var name = inp ? inp.value.trim() : '';
       if (!name) return false; // don't close
-      habits.push({ id: generateId(), name: name, days: [] });
+      habits.push({ id: generateId(), name: name, days: [], category: _modalCat || null });
       activeIdx = habits.length - 1;
       saveHabits(habits);
       renderTabs();
@@ -2044,6 +2391,16 @@ body {
 
     // Weekly insights
     renderWeekly(h);
+
+    // v8: Category chips + dot
+    renderCategoryChips(h);
+    renderCatDot(h);
+
+    // v8: Streak record
+    renderStreakRecord(h);
+
+    // v8: Momentum graph
+    renderMomentumGraph(h);
   }
 
   function renderHeatmap(h, animateToday) {
@@ -2384,7 +2741,7 @@ body {
     if (!habits || habits.length === 0) return;
     var data = {
       app: 'Drift',
-      version: '7.0',
+      version: '8.0',
       exported: new Date().toISOString(),
       habits: habits
     };

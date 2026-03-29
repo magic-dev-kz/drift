@@ -1,5 +1,36 @@
 # Drift — Changelog
 
+## v8.0 (2026-03-29)
+
+Feature update by Mario.
+
+### Habit Categories
+- Optional category tag for each habit: Health, Work, Creative, Learning, Social.
+- Clickable category chips below the habit name with colored active state.
+- Category selection available both in the main card and the "New habit" modal.
+- Colored dot indicator next to the habit name when a category is set.
+- Category data persisted in localStorage alongside habit data.
+
+### Momentum Graph
+- Small SVG line chart showing 30-day momentum trend, placed below the momentum ring.
+- Uses a rolling 7-day window calculation at each point for smooth visualization.
+- Gradient-filled area under the line with lavender stroke and glow filter.
+- Automatically updates when toggling habits done/undone.
+
+### Streak Record
+- "Personal best: X days" shown above the habit name when a streak record exists.
+- Highlights with exclamation when the current streak equals or beats the record.
+- Calculates longest consecutive streak from all tracked days.
+
+### Technical
+- Service worker cache updated to `drift-v8.0`.
+- Export version bumped to `8.0`.
+
+### Preserved
+- All existing features intact.
+
+---
+
 ## v7.0 (2026-03-29)
 
 Feature update by Mario.
