@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drift</title>
+<link rel="manifest" href="manifest.json">
+<meta property="og:title" content="Drift — Gentle Habit Tracker">
+<meta property="og:description" content="Track habits without anxiety. No streaks, no guilt. Just gentle momentum. Free, private, offline.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Drift — Gentle Habit Tracker">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --color-bg: #FBF8F4;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #3D3A37;
+  --color-text-secondary: #9B9590;
+  --color-text-phrase: #6F6358;
+  --color-accent-lavender: #C4B5E0;
+  --color-accent-mint: #A8D8C8;
+  --color-accent-peach: #F5C6A5;
+  --color-accent-apricot: #F0A878;
+  --color-accent-gold: #E8B84B;
+  --color-dot-done: #D4C4A0;
+  --color-dot-missed: #E8E4DF;
+  --color-dot-today: #C4B5E0;
+  --color-button-bg: #E8DDD0;
+  --color-button-bg-active: #D4C4A0;
+  --color-button-text: #5C544B;
+  --color-shadow: rgba(61, 58, 55, 0.06);
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --momentum-size: 200px;
+  --card-max-width: 380px;
+  --card-radius: 24px;
+  --button-height: 56px;
+  --button-radius: 16px;
+  --dot-size: 10px;
+  --dot-gap: 6px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #1C1A18;
+    --color-surface: #2A2725;
+    --color-text-primary: #E8E4DF;
+    --color-text-secondary: #8A837D;
+    --color-text-phrase: #B0A89E;
+    --color-accent-lavender: #9B88C4;
+    --color-accent-mint: #7AB8A4;
+    --color-accent-peach: #D4A07A;
+    --color-accent-apricot: #C88A58;
+    --color-accent-gold: #D4A43C;
+    --color-dot-done: #A09070;
+    --color-dot-missed: #3A3633;
+    --color-dot-today: #9B88C4;
+    --color-button-bg: #3A3633;
+    --color-button-bg-active: #5C544B;
+    --color-button-text: #E8E4DF;
+    --color-shadow: rgba(0, 0, 0, 0.2);
+  }
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 16px;
+  background: var(--color-bg);
+  font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== ONBOARDING ===== */
+
+.onboarding {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  max-width: 340px;
+  width: 100%;
+  text-align: center;
+}
+
+.onboarding-title {
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.onboarding-input {
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--color-text-primary);
+  background: var(--color-surface);
+  border: 2px solid var(--color-dot-missed);
+  border-radius: 14px;
+  padding: 16px 20px;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  transition: border-color 200ms ease;
+}
+
+.onboarding-input:focus {
+  outline: none;
+  border-color: var(--color-accent-lavender);
+}
+
+.onboarding-input:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+.onboarding-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.onboarding-btn {
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-button-text);
+  background: var(--color-button-bg);
+  border: none;
+  border-radius: var(--button-radius);
+  padding: 14px 48px;
+  cursor: pointer;
+  transition: transform 150ms ease, background 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 2px 8px var(--color-shadow);
+}
+
+.onboarding-btn:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.onboarding-btn:active {
+  transform: scale(0.97);
+}
+
+.onboarding-btn:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+.onboarding-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+/* ===== CARD ===== */
+
+.card {
+  background: var(--color-surface);
+  border-radius: var(--card-radius);
+  padding: 40px 32px 32px;
+  max-width: var(--card-max-width);
+  width: calc(100% - 32px);
+  margin: 0 auto;
+  box-shadow: 0 4px 24px var(--color-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* ===== HABIT NAME ===== */
+
+.habit-name {
+  font-family: var(--font-family);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  text-align: center;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  border: none;
+  background: none;
+  width: 100%;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: background 200ms ease;
+}
+
+.habit-name:hover {
+  background: var(--color-dot-missed);
+}
+
+.habit-name:focus {
+  outline: none;
+  background: var(--color-dot-missed);
+}
+
+.habit-name:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 2px;
+}
+
+/* ===== MOMENTUM METER ===== */
+
+.momentum-meter {
+  width: var(--momentum-size);
+  height: var(--momentum-size);
+  position: relative;
+}
+
+.momentum-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.momentum-track {
+  fill: none;
+  stroke: var(--color-dot-missed);
+  stroke-width: 10;
+}
+
+.momentum-progress {
+  fill: none;
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 800ms cubic-bezier(0.4, 0, 0.2, 1),
+              stroke 600ms ease-in-out;
+}
+
+.momentum-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  pointer-events: none;
+}
+
+/* ===== PHRASE ===== */
+
+.phrase {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-phrase);
+  text-align: center;
+  line-height: 1.5;
+  min-height: 24px;
+  transition: opacity 300ms ease;
+  margin-top: -8px;
+}
+
+/* ===== BUTTON ===== */
+
+.btn-done {
+  font-family: var(--font-family);
+  background: var(--color-button-bg);
+  color: var(--color-button-text);
+  border: none;
+  border-radius: var(--button-radius);
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 150ms ease, background 200ms ease, box-shadow 200ms ease;
+  box-shadow: 0 2px 8px var(--color-shadow);
+  width: 100%;
+  max-width: 280px;
+  height: var(--button-height);
+  position: relative;
+  overflow: visible;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.btn-done:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 16px var(--color-shadow);
+}
+
+.btn-done:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+.btn-done:active {
+  transform: scale(0.97);
+}
+
+.btn-done--completed {
+  background: var(--color-button-bg-active);
+}
+
+/* ===== PARTICLES ===== */
+
+@keyframes particle-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(0.5);
+  }
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  animation: particle-burst 400ms ease-out forwards;
+  pointer-events: none;
+  top: 50%;
+  left: 50%;
+  margin-top: -3px;
+  margin-left: -3px;
+}
+
+/* ===== HEATMAP ===== */
+
+.heatmap {
+  display: flex;
+  gap: var(--dot-gap);
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.heatmap-dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background: var(--color-dot-missed);
+  transition: background 300ms ease, transform 300ms ease, border-color 300ms ease;
+  flex-shrink: 0;
+  cursor: default;
+}
+
+.heatmap-dot:hover {
+  transform: scale(1.5);
+}
+
+.heatmap-dot--done {
+  background: var(--color-dot-done);
+}
+
+.heatmap-dot--today {
+  background: transparent;
+  border: 2px solid var(--color-dot-today);
+  box-sizing: border-box;
+}
+
+.heatmap-dot--today.heatmap-dot--done {
+  background: var(--color-dot-done);
+  border: 2px solid var(--color-dot-today);
+}
+
+@keyframes dot-fill {
+  0% { transform: scale(0.5); opacity: 0.3; }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.heatmap-dot--animate {
+  animation: dot-fill 400ms ease-out;
+}
+
+/* ===== MODAL ===== */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 58, 55, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  animation: fade-in 200ms ease;
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 320px;
+  width: calc(100% - 48px);
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.4;
+}
+
+.modal-text {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.modal-btn {
+  font-family: var(--font-family);
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+
+.modal-btn:active {
+  transform: scale(0.96);
+}
+
+.modal-btn:focus-visible {
+  outline: 2px solid var(--color-accent-lavender);
+  outline-offset: 3px;
+}
+
+.modal-btn--cancel {
+  background: var(--color-dot-missed);
+  color: var(--color-text-primary);
+}
+
+.modal-btn--confirm {
+  background: var(--color-accent-peach);
+  color: var(--color-text-primary);
+}
+
+/* ===== HIDDEN ===== */
+
+.hidden {
+  display: none !important;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 374px) {
+  .momentum-meter {
+    width: 160px;
+    height: 160px;
+  }
+  .momentum-text {
+    font-size: 40px;
+  }
+  .card {
+    padding: 32px 20px 24px;
+  }
+  .btn-done {
+    height: 48px;
+    font-size: 16px;
+  }
+  .heatmap-dot {
+    width: 8px;
+    height: 8px;
+  }
+  .heatmap {
+    gap: 4px;
+  }
+}
+
+@media (min-width: 768px) {
+  .momentum-meter {
+    width: 240px;
+    height: 240px;
+  }
+  .momentum-text {
+    font-size: 56px;
+  }
+  .card {
+    max-width: 420px;
+    padding: 48px 40px 40px;
+  }
+}
+
+/* ===== WELCOME ONBOARDING OVERLAY ===== */
+
+.drift-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(251, 248, 244, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: scale(0.95);
+  animation: drift-onb-in 400ms ease forwards;
+  padding: 24px;
+}
+@keyframes drift-onb-in {
+  to { opacity: 1; transform: scale(1); }
+}
+.drift-welcome-overlay.hiding {
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.drift-welcome-card {
+  background: var(--color-surface);
+  border-radius: 28px;
+  padding: 48px 36px 40px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 40px rgba(61, 58, 55, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.drift-welcome-icon {
+  font-size: 56px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.drift-welcome-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+}
+.drift-welcome-subtitle {
+  font-size: 16px;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.drift-welcome-features {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  margin: 12px 0 20px;
+}
+.drift-welcome-features li {
+  font-size: 15px;
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: var(--color-bg);
+  border-radius: 12px;
+}
+.drift-welcome-features li span.icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.drift-welcome-cta {
+  font-family: var(--font-family);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--color-button-text);
+  background: var(--color-accent-lavender);
+  border: none;
+  border-radius: var(--button-radius);
+  padding: 14px 36px;
+  cursor: pointer;
+  transition: transform 150ms ease, background 200ms ease;
+  width: 100%;
+  max-width: 280px;
+}
+.drift-welcome-cta:hover {
+  transform: scale(1.02);
+  background: var(--color-accent-mint);
+}
+.drift-welcome-cta:active {
+  transform: scale(0.97);
+}
+
+/* ===== REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .btn-done:hover {
+    transform: none;
+  }
+  .btn-done:active {
+    transform: none;
+  }
+  .particle {
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- WELCOME OVERLAY -->
+<div id="drift-welcome" class="drift-welcome-overlay" style="display:none;">
+  <div class="drift-welcome-card">
+    <div class="drift-welcome-icon" aria-hidden="true">&#x1F30A;</div>
+    <h1 class="drift-welcome-title">Drift</h1>
+    <p class="drift-welcome-subtitle">One habit. One button. No guilt when you miss a day.</p>
+    <ul class="drift-welcome-features">
+      <li><span class="icon" aria-hidden="true">&#x2728;</span> Momentum, not streaks</li>
+      <li><span class="icon" aria-hidden="true">&#x1F4CA;</span> Visual progress heatmap</li>
+      <li><span class="icon" aria-hidden="true">&#x1F49C;</span> Celebrates every small step</li>
+    </ul>
+    <button class="drift-welcome-cta" id="drift-welcome-start">Start Your Drift &#x2192;</button>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="onboarding hidden">
+  <div class="onboarding-title">Какую привычку ты хочешь развить?</div>
+  <input type="text" id="onboarding-input" class="onboarding-input" placeholder="Например: медитация" maxlength="60" autocomplete="off">
+  <button id="onboarding-btn" class="onboarding-btn" disabled>Начать</button>
+</div>
+
+<!-- MAIN CARD -->
+<div id="app" class="card hidden">
+  <input type="text" id="habit-name" class="habit-name" maxlength="60" autocomplete="off" placeholder="Моя привычка">
+
+  <div class="momentum-meter" aria-label="Momentum: 0%">
+    <svg class="momentum-svg" viewBox="0 0 200 200">
+      <circle class="momentum-track" cx="100" cy="100" r="90"></circle>
+      <circle id="momentum-progress" class="momentum-progress" cx="100" cy="100" r="90"
+        stroke-dasharray="565.49"
+        stroke-dashoffset="565.49"></circle>
+    </svg>
+    <div id="momentum-text" class="momentum-text">0%</div>
+  </div>
+
+  <div id="phrase" class="phrase">Первый шаг — самый важный</div>
+
+  <button id="btn-done" class="btn-done">Сделано</button>
+
+  <div id="heatmap" class="heatmap" role="img" aria-label="Отмечено 0 из 30 дней"></div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal">
+    <div id="modal-title" class="modal-title">Начать заново?</div>
+    <div class="modal-text">Привычка и вся история будут удалены. Это действие нельзя отменить.</div>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="modal-btn modal-btn--cancel">Отмена</button>
+      <button id="modal-confirm" class="modal-btn modal-btn--confirm">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== CONSTANTS =====
+  var CIRCUMFERENCE = 2 * Math.PI * 90; // 565.49
+  var WINDOW_DAYS = 30;
+  var STORAGE_KEY = 'drift_data';
+  var LONG_PRESS_MS = 500;
+
+  // ===== PHRASES =====
+  var PHRASES = [
+    { min: 0,   max: 0,   text: 'Первый шаг \u2014 самый важный' },
+    { min: 1,   max: 30,  text: 'Начало положено' },
+    { min: 31,  max: 60,  text: 'Набираешь обороты' },
+    { min: 61,  max: 80,  text: 'Хорошая инерция' },
+    { min: 81,  max: 99,  text: 'Ты в потоке' },
+    { min: 100, max: 100, text: 'Полный momentum' }
+  ];
+
+  // ===== DOM =====
+  var elOnboarding = document.getElementById('onboarding');
+  var elOnboardingInput = document.getElementById('onboarding-input');
+  var elOnboardingBtn = document.getElementById('onboarding-btn');
+  var elApp = document.getElementById('app');
+  var elHabitName = document.getElementById('habit-name');
+  var elMomentumProgress = document.getElementById('momentum-progress');
+  var elMomentumText = document.getElementById('momentum-text');
+  var elPhrase = document.getElementById('phrase');
+  var elBtnDone = document.getElementById('btn-done');
+  var elHeatmap = document.getElementById('heatmap');
+  var elModalOverlay = document.getElementById('modal-overlay');
+  var elModalCancel = document.getElementById('modal-cancel');
+  var elModalConfirm = document.getElementById('modal-confirm');
+
+  // ===== STORAGE =====
+  function loadData() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { /* ignore */ }
+    return null;
+  }
+
+  function saveData(data) {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    } catch (e) { /* ignore */ }
+  }
+
+  function clearData() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch (e) { /* ignore */ }
+  }
+
+  // ===== DATE HELPERS =====
+  function todayStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
+  function daysAgoStr(n) {
+    var d = new Date();
+    d.setDate(d.getDate() - n);
+    return d.getFullYear() + '-' +
+      String(d.getMonth() + 1).padStart(2, '0') + '-' +
+      String(d.getDate()).padStart(2, '0');
+  }
+
+  // ===== MOMENTUM CALCULATION =====
+  function calcMomentum(doneDays) {
+    var today = todayStr();
+    var count = 0;
+    for (var i = 0; i < WINDOW_DAYS; i++) {
+      var day = daysAgoStr(i);
+      if (doneDays.indexOf(day) !== -1) count++;
+    }
+    return Math.round((count / WINDOW_DAYS) * 100);
+  }
+
+  // ===== COLOR BY MOMENTUM =====
+  function getMomentumColor(pct) {
+    if (pct <= 0)  return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-lavender').trim();
+    if (pct <= 30) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-lavender').trim();
+    if (pct <= 60) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-mint').trim();
+    if (pct <= 80) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-peach').trim();
+    if (pct <= 99) return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-apricot').trim();
+    return getComputedStyle(document.documentElement).getPropertyValue('--color-accent-gold').trim();
+  }
+
+  // ===== PHRASE =====
+  function getPhrase(pct) {
+    for (var i = 0; i < PHRASES.length; i++) {
+      if (pct >= PHRASES[i].min && pct <= PHRASES[i].max) return PHRASES[i].text;
+    }
+    return PHRASES[0].text;
+  }
+
+  // ===== RENDER =====
+  function render(data, animate) {
+    var momentum = calcMomentum(data.days);
+    var color = getMomentumColor(momentum);
+    var offset = CIRCUMFERENCE - (CIRCUMFERENCE * momentum / 100);
+
+    elMomentumProgress.setAttribute('stroke-dashoffset', offset);
+    elMomentumProgress.setAttribute('stroke', color);
+    elMomentumText.textContent = momentum + '%';
+
+    // ARIA: update momentum meter label
+    elMomentumProgress.closest('.momentum-meter').setAttribute('aria-label', 'Momentum: ' + momentum + '%');
+
+    // ARIA: update heatmap label
+    var doneCount = 0;
+    for (var j = 0; j < WINDOW_DAYS; j++) {
+      if (data.days.indexOf(daysAgoStr(j)) !== -1) doneCount++;
+    }
+    elHeatmap.setAttribute('aria-label', '\u041E\u0442\u043C\u0435\u0447\u0435\u043D\u043E ' + doneCount + ' \u0438\u0437 30 \u0434\u043D\u0435\u0439');
+
+    // Phrase
+    var phrase = getPhrase(momentum);
+    if (elPhrase.textContent !== phrase) {
+      elPhrase.style.opacity = '0';
+      setTimeout(function() {
+        elPhrase.textContent = phrase;
+        elPhrase.style.opacity = '1';
+      }, 150);
+    }
+
+    // Button state
+    var today = todayStr();
+    var isDoneToday = data.days.indexOf(today) !== -1;
+    elBtnDone.textContent = isDoneToday ? 'Готово!' : 'Сделано';
+    if (isDoneToday) {
+      elBtnDone.classList.add('btn-done--completed');
+    } else {
+      elBtnDone.classList.remove('btn-done--completed');
+    }
+
+    // Heatmap
+    renderHeatmap(data, animate);
+  }
+
+  function renderHeatmap(data, animateToday) {
+    elHeatmap.innerHTML = '';
+    var today = todayStr();
+    for (var i = WINDOW_DAYS - 1; i >= 0; i--) {
+      var day = daysAgoStr(i);
+      var dot = document.createElement('div');
+      dot.className = 'heatmap-dot';
+      var isDone = data.days.indexOf(day) !== -1;
+
+      // Add date tooltip
+      var d = new Date(day);
+      dot.title = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + (isDone ? ' ✓' : '');
+
+      if (day === today) {
+        dot.classList.add('heatmap-dot--today');
+        dot.title = 'Today' + (isDone ? ' ✓' : '');
+        if (isDone) {
+          dot.classList.add('heatmap-dot--done');
+          if (animateToday) dot.classList.add('heatmap-dot--animate');
+        }
+      } else if (isDone) {
+        dot.classList.add('heatmap-dot--done');
+      }
+      elHeatmap.appendChild(dot);
+    }
+  }
+
+  // ===== PARTICLES =====
+  function spawnParticles(color) {
+    var count = 8;
+    for (var i = 0; i < count; i++) {
+      var p = document.createElement('div');
+      p.className = 'particle';
+      var angle = (Math.PI * 2 / count) * i + (Math.random() * 0.5 - 0.25);
+      var dist = 30 + Math.random() * 20;
+      var dx = Math.cos(angle) * dist;
+      var dy = Math.sin(angle) * dist;
+      p.style.setProperty('--dx', dx + 'px');
+      p.style.setProperty('--dy', dy + 'px');
+      p.style.background = color;
+      elBtnDone.appendChild(p);
+      setTimeout(function(el) { el.remove(); }.bind(null, p), 450);
+    }
+  }
+
+  // ===== TOGGLE TODAY =====
+  function toggleToday() {
+    var data = loadData();
+    if (!data) return;
+    var today = todayStr();
+    var idx = data.days.indexOf(today);
+    var marking = idx === -1;
+
+    if (marking) {
+      data.days.push(today);
+    } else {
+      data.days.splice(idx, 1);
+    }
+    saveData(data);
+
+    if (marking) {
+      var momentum = calcMomentum(data.days);
+      var color = getMomentumColor(momentum);
+      spawnParticles(color);
+      // Haptic
+      if (navigator.vibrate) {
+        try { navigator.vibrate(10); } catch(e) {}
+      }
+    }
+
+    render(data, marking);
+  }
+
+  // ===== HABIT NAME CHANGE =====
+  function onHabitNameChange() {
+    var data = loadData();
+    if (!data) return;
+    var name = elHabitName.value.trim();
+    if (name && name !== data.habit) {
+      data.habit = name;
+      saveData(data);
+    } else if (!name) {
+      elHabitName.value = data.habit;
+    }
+  }
+
+  // ===== LONG PRESS RESET =====
+  var longPressTimer = null;
+
+  function onPointerDown(e) {
+    longPressTimer = setTimeout(function() {
+      showModal();
+    }, LONG_PRESS_MS);
+  }
+
+  function onPointerUp() {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
+  // ===== MODAL =====
+  var modalTriggerEl = null;
+
+  function showModal() {
+    modalTriggerEl = document.activeElement;
+    elModalOverlay.classList.remove('hidden');
+    elModalCancel.focus();
+  }
+
+  function hideModal() {
+    elModalOverlay.classList.add('hidden');
+    if (modalTriggerEl) {
+      modalTriggerEl.focus();
+      modalTriggerEl = null;
+    }
+  }
+
+  // Focus trap inside modal
+  function trapFocus(e) {
+    if (elModalOverlay.classList.contains('hidden')) return;
+    var focusable = [elModalCancel, elModalConfirm];
+    if (e.key === 'Tab') {
+      var idx = focusable.indexOf(document.activeElement);
+      if (e.shiftKey) {
+        e.preventDefault();
+        focusable[idx <= 0 ? focusable.length - 1 : idx - 1].focus();
+      } else {
+        e.preventDefault();
+        focusable[idx >= focusable.length - 1 ? 0 : idx + 1].focus();
+      }
+    }
+  }
+
+  // Close on Escape
+  function onKeyDown(e) {
+    if (e.key === 'Escape' && !elModalOverlay.classList.contains('hidden')) {
+      hideModal();
+    }
+  }
+
+  document.addEventListener('keydown', onKeyDown);
+  document.addEventListener('keydown', trapFocus);
+
+  function confirmReset() {
+    clearData();
+    hideModal();
+    elApp.classList.add('hidden');
+    elOnboarding.classList.remove('hidden');
+    elOnboardingInput.value = '';
+    elOnboardingBtn.disabled = true;
+    elOnboardingInput.focus();
+  }
+
+  // ===== ONBOARDING =====
+  function startOnboarding() {
+    elOnboarding.classList.remove('hidden');
+    elApp.classList.add('hidden');
+    elOnboardingInput.focus();
+  }
+
+  function finishOnboarding() {
+    var name = elOnboardingInput.value.trim();
+    if (!name) return;
+    var data = {
+      habit: name,
+      days: []
+    };
+    saveData(data);
+    showApp(data);
+  }
+
+  function showApp(data) {
+    elOnboarding.classList.add('hidden');
+    elApp.classList.remove('hidden');
+    elHabitName.value = data.habit;
+    render(data, false);
+  }
+
+  // ===== EVENT LISTENERS =====
+  elOnboardingInput.addEventListener('input', function() {
+    elOnboardingBtn.disabled = !elOnboardingInput.value.trim();
+  });
+
+  elOnboardingInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && elOnboardingInput.value.trim()) {
+      finishOnboarding();
+    }
+  });
+
+  elOnboardingBtn.addEventListener('click', finishOnboarding);
+
+  elBtnDone.addEventListener('click', toggleToday);
+
+  elHabitName.addEventListener('change', onHabitNameChange);
+  elHabitName.addEventListener('blur', onHabitNameChange);
+
+  elHabitName.addEventListener('pointerdown', onPointerDown);
+  elHabitName.addEventListener('pointerup', onPointerUp);
+  elHabitName.addEventListener('pointerleave', onPointerUp);
+  elHabitName.addEventListener('contextmenu', function(e) {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+      e.preventDefault();
+    }
+  });
+
+  elModalCancel.addEventListener('click', hideModal);
+  elModalConfirm.addEventListener('click', confirmReset);
+  elModalOverlay.addEventListener('click', function(e) {
+    if (e.target === elModalOverlay) hideModal();
+  });
+
+  // ===== INIT =====
+  var data = loadData();
+  if (data && data.habit) {
+    showApp(data);
+  } else {
+    startOnboarding();
+  }
+
+  // ===== WELCOME OVERLAY =====
+  (function initWelcome() {
+    var KEY = 'drift_onboarding_done';
+    if (localStorage.getItem(KEY)) return;
+    var overlay = document.getElementById('drift-welcome');
+    overlay.style.display = '';
+    document.getElementById('drift-welcome-start').addEventListener('click', function() {
+      overlay.classList.add('hiding');
+      setTimeout(function() {
+        overlay.style.display = 'none';
+        overlay.remove();
+      }, 300);
+      try { localStorage.setItem(KEY, '1'); } catch(e) {}
+    });
+  })();
+
+})();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+</script>
+</body>
+</html>

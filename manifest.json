@@ -1,0 +1,14 @@
+{
+  "name": "Drift",
+  "short_name": "Drift",
+  "description": "Gentle habit tracker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FBF8F4",
+  "theme_color": "#C4B5E0",
+  "scope": ".",
+  "icons": [
+    {"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🌊</text></svg>", "sizes": "any", "type": "image/svg+xml", "purpose": "any"},
+    {"src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🌊</text></svg>", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable"}
+  ]
+}
