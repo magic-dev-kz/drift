@@ -1,5 +1,14 @@
 # Drift — Changelog
 
+## v17.0 (2026-03-29) — Accessibility Pass
+
+- **Skip link**: Hidden skip-to-content link appears on Tab for keyboard users, jumps to main habit card
+- **Done button aria-label**: Dynamic label "Mark [habit name] as done" updates with active habit name
+- **Heatmap dots aria-label**: Each heatmap dot now has an aria-label matching its title (date + status)
+- SW cache bumped to `drift-v17.0`
+
+---
+
 ## v16.0 (2026-03-29) — Habit Emoji Picker
 
 - **Emoji Picker**: Choose from 5 emojis when creating a new habit, displayed in tab and name
