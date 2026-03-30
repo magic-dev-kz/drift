@@ -1,5 +1,10 @@
 # Drift — Changelog
 
+## v20.0 (2026-03-29) — Print Styles
+
+- **Print stylesheet**: `@media print` rules — hides overlays, buttons, tabs, onboarding; shows habit summary + heatmap; white bg, black text; heatmap colors preserved via print-color-adjust
+- SW cache bumped to `drift-v20.0`
+
 ## v19.0 (2026-03-29) — Error Handling Hardening
 
 - **Storage quota warning**: Shows "Storage almost full" banner when localStorage exceeds 4MB

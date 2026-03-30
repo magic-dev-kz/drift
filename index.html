@@ -1907,6 +1907,26 @@ body {
 .oc-footer{text-align:center;padding:20px 16px 24px;margin-top:24px}
 .oc-footer a{font-size:.78rem;color:var(--text-muted,var(--text-secondary,#888));text-decoration:none;opacity:.6;transition:opacity .2s}
 .oc-footer a:hover{opacity:1}
+
+/* === Print Styles === */
+@media print{
+  .drift-welcome-overlay,.onboarding,.gentle-reminder,.milestone-overlay,
+  .skip-link,.oc-footer,.pwa-banner,.toast,.export-toast,
+  .btn-done,.btn-rest,.btn-undo,.habit-tabs-wrap,.intention-prompt,
+  .habit-category-wrap,.habit-name-row,
+  .momentum-graph-wrap,
+  button{display:none!important}
+  #app{display:block!important;visibility:visible!important;max-width:100%;padding:0;margin:0;box-shadow:none;border:none}
+  body{background:#fff!important;color:#000!important;font-size:12pt}
+  .card{background:#fff!important;box-shadow:none;border:none}
+  .momentum-meter{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .momentum-text{color:#000!important}
+  .phrase{color:#333!important}
+  .heatmap{break-inside:avoid;margin-top:12px}
+  .heatmap .day{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .streaks-calendar{break-inside:avoid}
+  @page{margin:1.5cm;size:auto}
+}
 </style>
 </head>
 <body>
