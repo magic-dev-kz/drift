@@ -2241,6 +2241,30 @@ body {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch (e) { /* ignore */ }
+    // v19: localStorage quota warning
+    checkStorageQuota();
+  }
+
+  function checkStorageQuota() {
+    try {
+      var total = 0;
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        total += (k || '').length + (localStorage.getItem(k) || '').length;
+      }
+      var mb = (total * 2) / (1024 * 1024); // UTF-16
+      var warn = document.getElementById('drift-storage-warning');
+      if (mb > 4) {
+        if (!warn) {
+          warn = document.createElement('div');
+          warn.id = 'drift-storage-warning';
+          warn.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(180,100,0,0.95);color:#fff;padding:10px 20px;border-radius:10px;font-size:0.85rem;font-weight:600;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,0.3);';
+          warn.textContent = 'Storage almost full. Consider exporting and clearing old data.';
+          document.body.appendChild(warn);
+          setTimeout(function() { if (warn.parentNode) warn.parentNode.removeChild(warn); }, 6000);
+        }
+      }
+    } catch (e) { /* ignore */ }
   }
 
   function generateId() {

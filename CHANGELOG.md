@@ -1,5 +1,10 @@
 # Drift — Changelog
 
+## v19.0 (2026-03-29) — Error Handling Hardening
+
+- **Storage quota warning**: Shows "Storage almost full" banner when localStorage exceeds 4MB
+- SW cache bumped to `drift-v19.0`
+
 ## v18.0 (2026-03-29) — SEO / Meta Pass
 
 - **description meta**: Added missing `<meta name="description">`
