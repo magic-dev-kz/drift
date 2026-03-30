@@ -1,5 +1,15 @@
 # Drift — Changelog
 
+## v22.0 (2026-03-29) — Data Portability Verified
+
+- **Import/export JSON verified**: Existing Export JSON and Import JSON buttons confirmed fully working — exports all habits with completion days, phrases, archive state; import validates structure, restores habits, shows count; backup reminder banner triggers after inactivity
+- SW cache bumped to `drift-v22.0`
+
+## v21.0 (2026-03-29) — Habit Archive
+
+- **Habit archive**: "Archive habit" button replaces immediate deletion as the soft-removal option; archived habits are hidden from tabs by default; "Show archived" checkbox toggle reveals them with dimmed/italic styling; archived habits can be unarchived; data persisted in habit object's `archived` flag
+- SW cache bumped to `drift-v21.0`
+
 ## v20.0 (2026-03-29) — Print Styles
 
 - **Print stylesheet**: `@media print` rules — hides overlays, buttons, tabs, onboarding; shows habit summary + heatmap; white bg, black text; heatmap colors preserved via print-color-adjust

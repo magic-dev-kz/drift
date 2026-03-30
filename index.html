@@ -1988,6 +1988,9 @@ body {
   <div class="habit-tabs-wrap">
     <div id="habit-tabs" class="habit-tabs" role="tablist" aria-label="Habits"></div>
     <button id="habit-add-btn" class="habit-tab habit-tab--add" style="display:none;" aria-label="Add new habit">+</button>
+    <label id="show-archived-toggle" style="display:none;font-size:.75rem;color:var(--color-text-secondary);cursor:pointer;margin-left:8px;white-space:nowrap;align-self:center;user-select:none;">
+      <input type="checkbox" id="show-archived-cb" style="margin-right:4px;vertical-align:middle;cursor:pointer;"> Show archived
+    </label>
   </div>
 
   <div id="drift-panel" role="tabpanel" aria-label="Habit details">
@@ -2090,6 +2093,7 @@ body {
     <button id="export-json-btn" class="export-btn">Export JSON</button>
     <button id="import-json-btn" class="export-btn">Import JSON</button>
     <input type="file" id="import-file-input" class="import-file-input" accept=".json,application/json">
+    <button id="archive-habit-btn" class="export-btn" style="color:var(--color-accent-lavender,#A78BFA);">Archive habit</button>
     <button id="delete-habit-btn" class="export-btn" style="color:var(--color-accent-peach);">Delete habit</button>
   </div>
   <div id="storage-indicator" class="storage-indicator"></div>
@@ -2524,9 +2528,31 @@ body {
     elMomentumGraphArea.setAttribute('d', areaPath);
   }
 
+  // v21: Archive state (declared here so renderTabs can reference it)
+  var showArchived = false;
+  var elArchiveBtn = document.getElementById('archive-habit-btn');
+  var elShowArchivedToggle = document.getElementById('show-archived-toggle');
+  var elShowArchivedCb = document.getElementById('show-archived-cb');
+
+  function hasArchivedHabits() {
+    return habits.some(function(h) { return h.archived; });
+  }
+
+  function updateArchivedToggleVisibility() {
+    if (hasArchivedHabits()) {
+      elShowArchivedToggle.style.display = '';
+    } else {
+      elShowArchivedToggle.style.display = 'none';
+      showArchived = false;
+      elShowArchivedCb.checked = false;
+    }
+  }
+
   function renderTabs() {
     elHabitTabs.innerHTML = '';
     for (var i = 0; i < habits.length; i++) {
+      // v21: hide archived habits unless showArchived is true
+      if (habits[i].archived && !showArchived) continue;
       var tab = document.createElement('button');
       tab.className = 'habit-tab' + (i === activeIdx ? ' habit-tab--active' : '');
       tab.textContent = (habits[i].emoji ? habits[i].emoji + ' ' : '') + (habits[i].name || 'Habit ' + (i + 1));
@@ -2535,6 +2561,11 @@ body {
       if (habits[i].color && HABIT_COLORS_MAP[habits[i].color]) {
         tab.style.borderLeft = '3px solid ' + HABIT_COLORS_MAP[habits[i].color];
         tab.style.paddingLeft = '10px';
+      }
+      // v21: Dim archived tabs
+      if (habits[i].archived) {
+        tab.style.opacity = '0.5';
+        tab.style.fontStyle = 'italic';
       }
       tab.setAttribute('role', 'tab');
       tab.setAttribute('aria-selected', i === activeIdx ? 'true' : 'false');
@@ -2550,6 +2581,12 @@ body {
       elHabitAddBtn.style.display = 'none';
     }
     elHabitTabs.style.display = 'flex';
+    // v21: update archive toggle visibility and button label
+    updateArchivedToggleVisibility();
+    var h = active();
+    if (elArchiveBtn) {
+      elArchiveBtn.textContent = (h && h.archived) ? 'Unarchive habit' : 'Archive habit';
+    }
   }
 
   elHabitAddBtn.addEventListener('click', onAddHabit);
@@ -3074,6 +3111,49 @@ body {
 
   // ===== MODAL =====
   var modalTriggerEl = null;
+
+  // ===== v21: HABIT ARCHIVE =====
+  function getVisibleHabits() {
+    if (showArchived) return habits;
+    return habits.filter(function(h) { return !h.archived; });
+  }
+
+  elArchiveBtn.addEventListener('click', function() {
+    var h = active();
+    if (!h) return;
+    if (h.archived) {
+      // Unarchive
+      h.archived = false;
+      saveHabits(habits);
+      showToast('"' + h.name + '" restored');
+    } else {
+      // Archive
+      h.archived = true;
+      saveHabits(habits);
+      showToast('"' + h.name + '" archived');
+      // Switch to next non-archived habit
+      if (!showArchived) {
+        var visible = getVisibleHabits();
+        if (visible.length > 0) {
+          activeIdx = habits.indexOf(visible[0]);
+        }
+      }
+    }
+    renderTabs();
+    renderCurrent(false);
+  });
+
+  elShowArchivedCb.addEventListener('change', function() {
+    showArchived = elShowArchivedCb.checked;
+    if (!showArchived) {
+      var visible = getVisibleHabits();
+      if (visible.length > 0 && active() && active().archived) {
+        activeIdx = habits.indexOf(visible[0]);
+      }
+    }
+    renderTabs();
+    if (active()) renderCurrent(false);
+  });
 
   function showDeleteModal() {
     var h = active();
