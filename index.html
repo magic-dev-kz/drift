@@ -3976,11 +3976,17 @@ body {
   }
 
   // ===== INIT =====
+  // v26: Helper to defer non-critical features
+  var _deferInit = function(fn) {
+    if ('requestIdleCallback' in window) { requestIdleCallback(fn); }
+    else { setTimeout(fn, 100); }
+  };
+
   habits = loadHabits() || [];
   if (habits.length > 0) {
     activeIdx = 0;
     showApp();
-    checkBackupReminder();
+    _deferInit(function() { checkBackupReminder(); });
     // Auto-expand weekly insights on Sundays
     if (new Date().getDay() === 0 && !weeklyOpen) {
       weeklyOpen = true;
@@ -4041,7 +4047,9 @@ body {
   })();
 
 })();
-if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}
+// v26: Defer SW registration to not block first paint
+if('requestIdleCallback' in window){requestIdleCallback(function(){if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}});}
+else{setTimeout(function(){if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(function(){});}},100);}
 </script>
 <div class="oc-footer"><a href="https://magic-dev-kz.github.io/openclaw/" target="_blank" rel="noopener">More free tools → OpenClaw</a></div>
 </body>
