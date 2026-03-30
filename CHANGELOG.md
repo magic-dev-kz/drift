@@ -1,5 +1,12 @@
 # Drift — Changelog
 
+
+## v23.0 (2026-03-29) — Deferred Font Loading
+
+- **Non-blocking Google Fonts**: Replaced render-blocking `@import` in inline CSS with `<link rel="preload" ... onload>` and `<noscript>` fallback — font CSS no longer blocks first paint
+- SW cache bumped to `drift-v23.0`
+
+---
 ## v22.0 (2026-03-29) — Data Portability Verified
 
 - **Import/export JSON verified**: Existing Export JSON and Import JSON buttons confirmed fully working — exports all habits with completion days, phrases, archive state; import validates structure, restores habits, shows count; backup reminder banner triggers after inactivity
