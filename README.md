@@ -1,31 +1,56 @@
-# 🌊 Drift — Habit Tracker Without Guilt
+# 🌊 NudgeBit — Gentle Habit Tracker
 
 **No streaks. No guilt. Just momentum.**
 
-A gentle habit tracker that measures your 30-day momentum instead of punishing you for missing a day.
+Habit tracker that measures your momentum instead of punishing you for missing a day.
+
+## Download
+
+**[App Store (iOS)](https://apps.apple.com/app/id6761635225)** — free, no ads, no subscription
+
+**[Web version](https://magic-dev-kz.github.io/drift/)** — single HTML file, works offline
+
+## Screenshots
+
+<p>
+  <img src="screenshots/screenshot_1.png" width="200" />
+  <img src="screenshots/screenshot_2.png" width="200" />
+  <img src="screenshots/screenshot_3.png" width="200" />
+</p>
+
+## Why NudgeBit?
+
+Most habit trackers celebrate your 30-day streak with a fire emoji — then reset you to zero when you miss one day. That cycle of guilt is why 80% of people quit within two weeks. NudgeBit replaces streaks with momentum: miss a day and your score dips from 86% to 71%. Not to zero. Never to zero.
 
 ## Features
 
-- **Momentum meter** — 30-day sliding window, not binary streaks
-- **SVG progress ring** — beautiful circular visualization
-- **30-dot heatmap** — see your last 30 days at a glance
-- **Positive reinforcement** — "You showed up. That's what matters."
-- **Dark mode** — native via prefers-color-scheme
-- **Works offline** — PWA, localStorage only
-- **No account** — completely private
+- **Momentum, Not Streaks** — rolling 7-day window, not binary pass/fail
+- **Rest Days Are a Feature** — tap Rest and your momentum stays the same
+- **Habit Formation Score** — science-based 66-day tracker, from seed to rooted
+- **Start With One Habit** — grow to three only when momentum stays above 70%
+- **Momentum Ring** — shifts from lavender to gold as you build consistency
+- **28-Day Heatmap** — green for done, blue for rest, gray for missed. No red. Ever
+- **Gentle Phrases** — "Every step matters" at 30%, "This is who you are now" at 90%
+- **iCloud Sync** — data on device, optional sync across devices
 
-## Philosophy
+## iOS App
 
-Most habit trackers punish you. Miss one day and your 47-day streak is gone. Drift doesn't do that. It shows your momentum — how often you've shown up over the last 30 days. 28 out of 30? Great. 15 out of 30? That's still showing up.
+Native SwiftUI app with full momentum tracking, rest day support, habit formation science, and iCloud sync.
 
-## Tech
+- Requires iOS 17+
+- Built with SwiftUI + iCloud
 
-- Single HTML file (~21KB)
-- Vanilla JS, zero frameworks
-- Google Fonts (Inter) for typography
-- SVG circle for progress indicator
-- PWA with service worker
-- Score: 9.5/10 (highest in portfolio)
+## Web Version
+
+Single HTML file PWA (~21KB) — vanilla JS, zero frameworks, works offline. Your data stays in your browser (localStorage).
+
+## Privacy
+
+All data on your device. iCloud sync is optional. No tracking, no analytics, no server. [Privacy Policy](https://mdk.guru/apps/drift/privacy)
+
+## Built by
+
+One person + AI agents at [MDK.GURU](https://mdk.guru)
 
 ## License
 
